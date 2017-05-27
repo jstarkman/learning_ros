@@ -43,7 +43,7 @@ private:
     void initializePublishers();
     void initializeServices();
     
-    void subscriberCallback(const std_msgs::Float32& message_holder); //prototype for callback of example subscriber
+    void subscriberCallback(const std_msgs::msg::Float32& message_holder); //prototype for callback of example subscriber
     //prototype for callback for example service
     bool serviceCallback(std_srvs::TriggerRequest& request, std_srvs::TriggerResponse& response);
 }; // note: a class definition requires a semicolon at the end of the definition

@@ -55,7 +55,7 @@ void ExampleRosClass::initializeServices()
 void ExampleRosClass::initializePublishers()
 {
     ROS_INFO("Initializing Publishers");
-    minimal_publisher_ = nh_.advertise<std_msgs::Float32>("example_class_output_topic", 1, true); 
+    minimal_publisher_ = nh_.advertise<std_msgs::msg::Float32>("example_class_output_topic", 1, true); 
     //add more publishers, as needed
     // note: COULD make minimal_publisher_ a public member function, if want to use it within "main()"
 }
@@ -64,13 +64,13 @@ void ExampleRosClass::initializePublishers()
 
 // a simple callback function, used by the example subscriber.
 // note, though, use of member variables and access to minimal_publisher_ (which is a member method)
-void ExampleRosClass::subscriberCallback(const std_msgs::Float32& message_holder) {
+void ExampleRosClass::subscriberCallback(const std_msgs::msg::Float32& message_holder) {
     // the real work is done in this callback function
     // it wakes up every time a new message is published on "exampleMinimalSubTopic"
 
     val_from_subscriber_ = message_holder.data; // copy the received data into member variable, so ALL member funcs of ExampleRosClass can access it
     ROS_INFO("myCallback activated: received value %f",val_from_subscriber_);
-    std_msgs::Float32 output_msg;
+    std_msgs::msg::Float32 output_msg;
     val_to_remember_ += val_from_subscriber_; //can use a member variable to store values between calls; add incoming value each callback
     output_msg.data= val_to_remember_;
     // demo use of publisher--since publisher object is a member function
