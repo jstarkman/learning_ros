@@ -1,21 +1,39 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(creating_a_ros_library)
 
-find_package(catkin_simple REQUIRED)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-catkin_simple()
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rmw REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
-# Libraries: uncomment the following and edit arguments to create a new library
-cs_add_library(example_ros_library src/example_ros_class.cpp)   
+include_directories(include)
 
-# Executables: uncomment the following and edit arguments to compile new nodes
-# may add more of these lines for more nodes from the same package
-cs_add_executable(ros_library_test_main src/example_ros_class_test_main.cpp)
 
-#the following is required, if desire to link a node in this package with a library created in this same package
-# edit the arguments to reference the named node and named library within this package
-target_link_libraries(ros_library_test_main example_ros_library)
+function(add_install_dll target files)
+  add_library(${target} SHARED ${files})
+  ament_target_dependencies(${target}
+    rclcpp std_msgs std_srvs class_loader)
+  install(TARGETS ${target} DESTINATION lib)
+endfunction()
 
-cs_install()
-cs_export()
-    
+
+function(add_link_install_exe target link_to_whom files)
+  add_executable(${target} ${files})
+  target_link_libraries(${target} ${link_to_whom})
+  ament_target_dependencies(${target}
+    "rclcpp" "std_msgs" "std_srvs" ${link_to_whom})
+  install(TARGETS ${target} DESTINATION bin)
+endfunction()
+
+
+set(shlib example_ros_library)
+add_install_dll(${shlib} src/example_ros_class.cpp)
+add_link_install_exe(ros_library_test_main ${shlib}
+  src/example_ros_class_test_main.cpp)
+
+ament_package()

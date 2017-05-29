@@ -1,16 +1,14 @@
-#include <creating_a_ros_library/example_ros_class.h>
+#include <creating_a_ros_library/example_ros_class.hpp>
 
-int main(int argc, char** argv) 
+int main(int argc, char **argv)
 {
-    // ROS set-ups:
-    ros::init(argc, argv, "example_lib_test_main"); //node name
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::node::Node::make_shared("example_lib_test_main");
 
-    ros::NodeHandle nh; // create a node handle; need to pass this to the class constructor
+  ROS_INFO("main: instantiating an object of type ExampleRosClass");
+  ExampleRosClass exampleRosClass(node);
 
-    ROS_INFO("main: instantiating an object of type ExampleRosClass");
-    ExampleRosClass exampleRosClass(&nh);  //instantiate an ExampleRosClass object and pass in pointer to nodehandle for constructor to use
-
-    ROS_INFO("main: going into spin; let the callbacks do all the work");
-    ros::spin();
-    return 0;
-} 
+  ROS_INFO("main: going into spin; let the callbacks do all the work");
+  rclcpp::spin(node);
+  return 0;
+}
