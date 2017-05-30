@@ -1,22 +1,29 @@
-#include<ros/ros.h> 
-#include <custom_msgs/VecOfDoubles.h> //this is the message type we are testing 
-void myCallback(const custom_msgs::VecOfDoubles& message_holder) 
-{ 
-  std::vector <double> vec_of_doubles = message_holder.dbl_vec; //can copy contents of message to a C++ vector like this
-  int nvals = vec_of_doubles.size(); //ask the vector how long it is
-  for (int i=0;i<nvals;i++) { 
-    ROS_INFO("vec[%d] = %f",i,vec_of_doubles[i]); //print out all the values 
+#include "custom_msgs/msg/vec_of_doubles.hpp"
+#include "rclcpp/rclcpp.hpp"
+
+#define ROS_INFO printf
+
+void myCallback(const custom_msgs::msg::VecOfDoubles::SharedPtr msg)
+{
+  std::vector<double> vec_of_doubles = msg->dbl_vec;
+
+  int nvals = vec_of_doubles.size();
+  for (int i = 0; i < nvals; i++)
+  {
+    ROS_INFO("vec[%d] = %f\n", i, vec_of_doubles[i]);
   }
   ROS_INFO("\n");
-} 
+}
 
-int main(int argc, char **argv) 
-{ 
-  ros::init(argc,argv,"vector_subscriber"); //default name of this node 
-  ros::NodeHandle n; // need this to establish communications with our new node 
-  
-  ros::Subscriber my_subscriber_object= n.subscribe("vec_topic",1,myCallback); 
+int main(int argc, char** argv)
+{
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::Node::make_shared("vector_subscriber");
 
-  ros::spin(); 
-  return 0; // should never get here, unless roscore dies 
-} 
+  auto sub =
+      node->create_subscription<custom_msgs::msg::VecOfDoubles>("vec_topic", myCallback, rmw_qos_profile_default);
+
+  rclcpp::spin(node);
+
+  return 0;
+}
