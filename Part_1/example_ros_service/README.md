@@ -1,7 +1,7 @@
 # example_ROS_service
-This simple example shows how to write a ROS service node.  See the accompanying document, "Introduction to ROS services"
+This simple example shows how to write a ROS2 service node.  See the accompanying document, "Introduction to ROS2 services"
 
-## Running tests/demos
+## DEPRECATED: Running tests/demos
  run this as: 
 `rosrun example_ros_service example_ros_service`
 

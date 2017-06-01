@@ -1,46 +1,70 @@
-//example ROS client:
-// first run: rosrun example_ROS_service example_ROS_service
-// then start this node:  rosrun example_ROS_service example_ROS_client
-
-
-
-#include <ros/ros.h>
-#include <example_ros_service/ExampleServiceMsg.h> // this message type is defined in the current package
 #include <iostream>
 #include <string>
-using namespace std;
+#include "example_ros_service/srv/example_service_msg.hpp"
+#include "rclcpp/rclcpp.hpp"
 
-int main(int argc, char **argv) {
-    ros::init(argc, argv, "example_ros_client");
-    ros::NodeHandle n;
-    ros::ServiceClient client = n.serviceClient<example_ros_service::ExampleServiceMsg>("lookup_by_name");
-    example_ros_service::ExampleServiceMsg srv;
-    bool found_on_list = false;
-    string in_name;
-    while (ros::ok()) {
-        cout<<endl;
-        cout << "enter a name (x to quit): ";
-        cin>>in_name;
-        if (in_name.compare("x")==0)
-            return 0;
-        //cout<<"you entered "<<in_name<<endl;
-        srv.request.name = in_name; //"Ted";
-        if (client.call(srv)) {
-            if (srv.response.on_the_list) {
-                cout << srv.request.name << " is known as " << srv.response.nickname << endl;
-                cout << "He is " << srv.response.age << " years old" << endl;
-                if (srv.response.good_guy)
-                    cout << "He is reported to be a good guy" << endl;
-                else
-                    cout << "Avoid him; he is not a good guy" << endl;
-            } else {
-                cout << srv.request.name << " is not in my database" << endl;
-            }
+example_ros_service::srv::ExampleServiceMsg_Response::SharedPtr
+send_blocking_request(rclcpp::node::Node::SharedPtr node,
+                      rclcpp::client::Client<example_ros_service::srv::ExampleServiceMsg>::SharedPtr client,
+                      example_ros_service::srv::ExampleServiceMsg_Request::SharedPtr request)
+{
+  std::cout << "Sending..." << std::endl;
+  auto response = client->async_send_request(request);
+  // wait for the response
+  if (rclcpp::spin_until_future_complete(node, response) == rclcpp::executor::FutureReturnCode::SUCCESS)
+  {
+    std::cout << "Received." << std::endl;
+    return response.get();
+  }
+  else
+  {
+    return NULL;
+  }
+}
 
-        } else {
-            ROS_ERROR("Failed to call service lookup_by_name");
-            return 1;
-        }
+int main(int argc, char **argv)
+{
+  rclcpp::init(argc, argv);
+
+  auto node = rclcpp::node::Node::make_shared("example_ros_client");
+  auto client = node->create_client<example_ros_service::srv::ExampleServiceMsg>("lookup_by_name");
+
+  auto request = std::make_shared<example_ros_service::srv::ExampleServiceMsg::Request>();
+
+  std::string in_name;
+  while (rclcpp::ok())
+  {
+    std::cout << std::endl;
+    std::cout << "enter a name (x to quit): ";
+    std::cin >> in_name;
+    if (in_name.compare("x") == 0)
+    {
+      return 0;
     }
-    return 0;
+
+    request->name = in_name;
+    auto response = send_blocking_request(node, client, request);
+    if (response)
+    {
+      if (response->on_the_list)
+      {
+        std::cout << request->name << " is known as " << response->nickname << std::endl;
+        std::cout << "He is " << response->age << " years old" << std::endl;
+        if (response->good_guy)
+          std::cout << "He is reported to be a good guy" << std::endl;
+        else
+          std::cout << "Avoid him; he is not a good guy" << std::endl;
+      }
+      else
+      {
+        std::cout << request->name << " is not in my database" << std::endl;
+      }
+    }
+    else
+    {
+      std::cerr << "Failed to call service lookup_by_name" << std::endl;
+      return 1;
+    }
+  }
+  return 0;
 }

@@ -1,61 +1,81 @@
-//path_client:
-// illustrates how to send a request to the path_service service
-
-#include <ros/ros.h>
-#include <example_ros_service/PathSrv.h> // this message type is defined in the current package
 #include <iostream>
 #include <string>
-#include <nav_msgs/Path.h>
-#include <geometry_msgs/Pose.h>
-#include <geometry_msgs/PoseStamped.h>
-using namespace std;
+#include "example_ros_service/srv/path_srv.hpp"
+#include "geometry_msgs/msg/pose.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "nav_msgs/msg/path.hpp"
+#include "rclcpp/rclcpp.hpp"
 
-geometry_msgs::Quaternion convertPlanarPhi2Quaternion(double phi) {
-    geometry_msgs::Quaternion quaternion;
-    quaternion.x = 0.0;
-    quaternion.y = 0.0;
-    quaternion.z = sin(phi / 2.0);
-    quaternion.w = cos(phi / 2.0);
-    return quaternion;
+/* ugly hack until rosconsole works */
+#define ROS_INFO printf
+
+geometry_msgs::msg::Quaternion convertPlanarPhi2Quaternion(double phi)
+{
+  geometry_msgs::msg::Quaternion quaternion;
+  quaternion.x = 0.0;
+  quaternion.y = 0.0;
+  quaternion.z = std::sin(phi / 2.0);
+  quaternion.w = std::cos(phi / 2.0);
+  return quaternion;
 }
 
-int main(int argc, char **argv) {
-    ros::init(argc, argv, "path_client");
-    ros::NodeHandle n;
-    ros::ServiceClient client = n.serviceClient<example_ros_service::PathSrv>("path_service");
-    geometry_msgs::Quaternion quat;
-    
-    while (!client.exists()) {
+example_ros_service::srv::PathSrv_Response::SharedPtr send_blocking_request(
+    rclcpp::node::Node::SharedPtr node, rclcpp::client::Client<example_ros_service::srv::PathSrv>::SharedPtr client,
+    example_ros_service::srv::PathSrv_Request::SharedPtr request)
+{
+  auto response = client->async_send_request(request);
+  if (rclcpp::spin_until_future_complete(node, response) == rclcpp::executor::FutureReturnCode::SUCCESS)
+  {
+    return response.get();
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+int main(int argc, char **argv)
+{
+  rclcpp::init(argc, argv);
+
+  auto node = rclcpp::node::Node::make_shared("path_client");
+  auto client = node->create_client<example_ros_service::srv::PathSrv>("path_service");
+
+  auto request = std::make_shared<example_ros_service::srv::PathSrv::Request>();
+
+  geometry_msgs::msg::Quaternion quat;
+
+  /* JAS cannot find ROS2 equivalent to client.exists()
+    while (!client.exists())
+    {
       ROS_INFO("waiting for service...");
-      ros::Duration(1.0).sleep();
+      rclcpp::WallRate naptime(1.0);
+      naptime.sleep();
     }
     ROS_INFO("connected client to service");
-    example_ros_service::PathSrv path_srv;
-    
-    //create some path points...this should be done by some intelligent algorithm, but we'll hard-code it here
-    geometry_msgs::PoseStamped pose_stamped;
-    geometry_msgs::Pose pose;
-    pose.position.x = 1.0; // say desired x-coord is 1
-    pose.position.y = 0.0;
-    pose.position.z = 0.0; // let's hope so!
-    pose.orientation.x = 0.0; //always, for motion in horizontal plane
-    pose.orientation.y = 0.0; // ditto
-    pose.orientation.z = 0.0; // implies oriented at yaw=0, i.e. along x axis
-    pose.orientation.w = 1.0; //sum of squares of all components of unit quaternion is 1
-    pose_stamped.pose = pose;
-    path_srv.request.nav_path.poses.push_back(pose_stamped);
-    
-    // some more poses...
-    quat = convertPlanarPhi2Quaternion(1.57); // get a quaternion corresponding to this heading
-    pose_stamped.pose.orientation = quat;   
-    pose_stamped.pose.position.y=1.0; // say desired y-coord is 1.0
-    path_srv.request.nav_path.poses.push_back(pose_stamped);
-    
-    quat = convertPlanarPhi2Quaternion(3.14);
-    pose_stamped.pose.orientation = quat;  
-    //desired position is not updated...just the desired heading  
-    path_srv.request.nav_path.poses.push_back(pose_stamped);
-    client.call(path_srv);
+  */
 
-    return 0;
+  auto pose_stamped = std::make_shared<geometry_msgs::msg::PoseStamped>();
+  auto pose = pose_stamped->pose;
+  pose.position.x = 1.0;
+  pose.position.y = 0.0;
+  pose.position.z = 0.0;
+  pose.orientation.x = 0.0;
+  pose.orientation.y = 0.0;
+  pose.orientation.z = 0.0;
+  pose.orientation.w = 1.0;
+  request->nav_path.poses.push_back(*pose_stamped);
+
+  quat = convertPlanarPhi2Quaternion(1.57);
+  pose_stamped->pose.orientation = quat;
+  pose_stamped->pose.position.y = 1.0;
+  request->nav_path.poses.push_back(*pose_stamped);
+
+  quat = convertPlanarPhi2Quaternion(3.14);
+  pose_stamped->pose.orientation = quat;
+
+  request->nav_path.poses.push_back(*pose_stamped);
+  send_blocking_request(node, client, request);
+
+  return 0;
 }

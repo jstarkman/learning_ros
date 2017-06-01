@@ -1,34 +1,31 @@
-//path_service:
-// example showing how to receive a nav_msgs/Path request
-// run with complementary path_client
-// this could be useful for 
-
-#include <ros/ros.h>
-#include <example_ros_service/PathSrv.h>
-#include <nav_msgs/Path.h>
-#include <geometry_msgs/Pose.h>
 #include <iostream>
 #include <string>
-using namespace std;
+#include "example_ros_service/srv/path_srv.hpp"
+#include "geometry_msgs/msg/pose.hpp"
+#include "nav_msgs/msg/path.hpp"
+#include "rclcpp/rclcpp.hpp"
 
-bool callback(example_ros_service::PathSrvRequest& request, example_ros_service::PathSrvResponse& response)
+/* ugly hack until rosconsole works */
+#define ROS_INFO printf
+
+void callback(const std::shared_ptr<rmw_request_id_t> request_header,
+              const std::shared_ptr<example_ros_service::srv::PathSrv::Request> request,
+              std::shared_ptr<example_ros_service::srv::PathSrv::Response> response)
 {
-    
-    ROS_INFO("callback activated");
-    int npts = request.nav_path.poses.size();
-    ROS_INFO("received path request with %d poses",npts);
- 
-  return true;
+  (void)request_header;
+  ROS_INFO("callback activated");
+  int npts = request->nav_path.poses.size();
+  ROS_INFO("received path request with %d poses", npts);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "path_service");
-  ros::NodeHandle n;
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::node::Node::make_shared("path_service");
+  auto service = node->create_service<example_ros_service::srv::PathSrv>("example_minimal_service", callback);
 
-  ros::ServiceServer service = n.advertiseService("path_service", callback);
   ROS_INFO("Ready accept paths.");
-  ros::spin();
+  rclcpp::spin(node);
 
   return 0;
 }
