@@ -114,6 +114,7 @@ void do_halt()
   for (int i = 0; i < 10; i++)
   {
     g_twist_commander->publish(g_twist_cmd);
+    std::cout << "sent halt command" << std::endl;
     loop_timer.sleep();
   }
 }
@@ -137,11 +138,11 @@ void callback(const std::shared_ptr<rmw_request_id_t> request_header,
               std::shared_ptr<example_ros_service::srv::PathSrv::Response> response)
 {
   (void)request_header;
-  ROS_INFO("callback activated");
+  std::cout << "callback activated" << std::endl;
   double yaw_desired, yaw_current, travel_distance, spin_angle;
   geometry_msgs::msg::Pose pose_desired;
   int npts = request->nav_path.poses.size();
-  ROS_INFO("received path request with %d poses", npts);
+  std::cout << "received path request with " << npts << " poses" << std::endl;
 
   for (int i = 0; i < npts; i++)
   {
@@ -149,7 +150,7 @@ void callback(const std::shared_ptr<rmw_request_id_t> request_header,
 
     yaw_desired = convertPlanarQuat2Phi(pose_desired.orientation);
 
-    ROS_INFO("pose %d: desired yaw = %f", i, yaw_desired);
+    ROS_INFO("pose %d: desired yaw = %f\n", i, yaw_desired);
     yaw_current = convertPlanarQuat2Phi(g_current_pose.orientation);
     spin_angle = yaw_desired - yaw_current;
     spin_angle = min_spin(spin_angle);
