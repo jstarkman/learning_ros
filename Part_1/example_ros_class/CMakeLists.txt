@@ -1,23 +1,25 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(example_ros_class)
 
-find_package(catkin_simple REQUIRED)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-catkin_simple()
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rmw REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
 
-# C++0x support - not quite the same as final C++11!
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+function(add_install_exe target files)
+  add_executable(${target} ${files})
+  ament_target_dependencies(${target}
+    "rclcpp" "std_msgs" "std_srvs")
+  install(TARGETS ${target} DESTINATION bin)
+endfunction()
 
-# Libraries
-# cs_add_libraries(my_lib src/my_lib.cpp)   
 
-# Executables
-cs_add_executable(example_ros_class src/example_ros_class.cpp)
-# target_link_library(example my_lib)
+add_install_exe(example_ros_class src/example_ros_class.cpp)
 
-cs_install()
-cs_export()
-    
+ament_package()
