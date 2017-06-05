@@ -1,30 +1,24 @@
-#include <ros/ros.h>
+#include "rclcpp/rclcpp.hpp"
 
-int main(int argc, char **argv) {
-    ros::init(argc, argv, "param_reader"); // name of this node will be "minimal_publisher"
-    ros::NodeHandle nh; // two lines to create a publisher object that can talk to ROS
-    double P_gain,D_gain,I_gain;
-    
-    if (nh.getParam("/joint1_gains/p", P_gain)) {
-    ROS_INFO("proportional gain set to %f",P_gain);
-    }
-    else
-    {
-    ROS_WARN("could not find parameter value /joint1_gains/p on parameter server");
-    }
-    if (nh.getParam("/joint1_gains/d", D_gain)) {
-    ROS_INFO("proportional gain set to %f",D_gain);
-    }
-    else
-    {
-    ROS_WARN("could not find parameter value /joint1_gains/d on parameter server");
-    }
-    if (nh.getParam("/joint1_gains/i", I_gain)) {
-    ROS_INFO("proportional gain set to %f",I_gain);
-    }
-    else
-    {
-    ROS_WARN("could not find parameter value /joint1_gains/i on parameter server");
-    }
+int main(int argc, char **argv)
+{
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::node::Node::make_shared("param_reader");
+  double P_gain, D_gain, I_gain;
+
+  auto parameters_client = std::make_shared<rclcpp::parameter_client::AsyncParametersClient>(node, "paramsrv");
+
+
+  auto parameters = parameters_client->get_parameters({ "joint1_gains/p", "joint1_gains/i", "joint1_gains/d", });
+  if (rclcpp::spin_until_future_complete(node, parameters) !=
+    rclcpp::executor::FutureReturnCode::SUCCESS)
+  {
+    printf("get_parameters service call failed. Exiting.\n");
+    return -1;
+  }
+  for (auto & parameter : parameters.get()) {
+    std::cout << "Parameter name: " << parameter.get_name() << std::endl;
+    std::cout << "Parameter value (" << parameter.get_type_name() << "): " <<
+      parameter.value_to_string() << std::endl;
+  }
 }
-
