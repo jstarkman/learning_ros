@@ -1,41 +1,24 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(using_a_ros_library)
 
-find_package(catkin_simple REQUIRED)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-#uncomment next line to use OpenCV library
-#find_package(OpenCV REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rmw REQUIRED)
+find_package(creating_a_ros_library REQUIRED)
 
-#uncomment the next line to use the point-cloud library
-#find_package(PCL 1.7 REQUIRED)
+function(add_link_install_exe target files)
+  add_executable(${target} ${files})
+#   target_link_libraries(${target} creating_a_ros_library)
+  ament_target_dependencies(${target}
+    "rclcpp" "creating_a_ros_library")
+  install(TARGETS ${target} DESTINATION bin)
+endfunction()
 
-#uncomment the following 4 lines to use the Eigen library
-#find_package(cmake_modules REQUIRED)
-#find_package(Eigen3 REQUIRED)
-#include_directories(${EIGEN3_INCLUDE_DIR})
-#add_definitions(${EIGEN_DEFINITIONS})
+add_link_install_exe(example_ros_class_test_main
+                     src/example_ros_class_test_main.cpp)
 
-catkin_simple()
-
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
-
-# C++0x support - not quite the same as final C++11!
-# use carefully;  can interfere with point-cloud library
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
-# Libraries: uncomment the following and edit arguments to create a new library
-# cs_add_library(my_lib src/my_lib.cpp)   
-
-# Executables: uncomment the following and edit arguments to compile new nodes
-# may add more of these lines for more nodes from the same package
-# cs_add_executable(example src/example.cpp)
-cs_add_executable(ros_library_external_test_main src/example_ros_class_test_main.cpp)
-
-#the following is required, if desire to link a node in this package with a library created in this same package
-# edit the arguments to reference the named node and named library within this package
-# target_link_libraries(example my_lib)
-
-cs_install()
-cs_export()
-    
+ament_package()
