@@ -1,24 +1,25 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
+
 project(lidar_alarm)
 
-find_package(catkin_simple REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rmw REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
-catkin_simple()
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
+function(custom_executable target)
+  add_executable(${target} src/${target}.cpp)
+  ament_target_dependencies(${target}
+    "rclcpp" "std_msgs" "sensor_msgs")
+  install(TARGETS ${target}
+    DESTINATION bin)
+endfunction()
 
-# C++0x support - not quite the same as final C++11!
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+custom_executable(lidar_alarm)
 
-# Libraries
-# cs_add_libraries(my_lib src/my_lib.cpp)   
-
-# Executables
-cs_add_executable(lidar_alarm src/lidar_alarm.cpp)
-#cs_add_executable(lidar_alarm2 src/lidar_alarm2.cpp)
-# target_link_library(example my_lib)
-
-cs_install()
-cs_export()
-    
+ament_package()
