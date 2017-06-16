@@ -11,10 +11,17 @@ single ping--e.g., examining a forward-motion corridor for evaluating safe forwa
 of the width of the robot.
 
 ## Example usage
-Start up the STDR simulator:
-`roslaunch stdr_launchers server_with_map_and_gui_plus_robot.launch`
-Start the lidar alarm node:
- `rosrun lidar_alarm lidar_alarm`
- Have the controller code monitor the `lidar_alarm` topic and do something intelligent with the information.
 
-    
+Start up the STDR simulator (broken in ROS2):
+
+`roslaunch stdr_launchers server_with_map_and_gui_plus_robot.launch`
+
+Start the lidar alarm node:
+
+`$ lidar_alarm`
+
+Have the controller code monitor the `lidar_alarm` topic and do something intelligent with the information.
+
+## Example ROS1 solution
+
+[This repo](https://github.com/jstarkman/p2_jas497) shows an example of how to make the LIDAR alarm more intelligent.  It also includes a wall follower.
