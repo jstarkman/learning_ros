@@ -1,8 +1,8 @@
-//example pgm to set a model state in Gazebo
-//specifically, reset "toy_block" to a predefined pose
 
-#include <ros/ros.h> //ALWAYS need to include this
-//#include <gazebo_msgs/SetModelState.h>
+
+
+#include <ros/ros.h> 
+
 #include <gazebo_msgs/ModelState.h>
 #include <gazebo_msgs/SetModelState.h>
 #include <geometry_msgs/Quaternion.h>
@@ -15,7 +15,7 @@
 
 #define SSTR( x ) static_cast< std::ostringstream & >( \
         ( std::ostringstream() << std::dec << x ) ).str()
-//-x 0.5 -y -0.35 -z 0.8  -Y 0.43
+
 using namespace std;
 
 
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
     
    
     set_model_state_client.call(model_state_srv_msg);
-        //make sure service call was successful
+        
         bool result = model_state_srv_msg.response.success;
         if (!result)
             ROS_WARN("service call to set_model_state failed!");

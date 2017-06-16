@@ -1,3 +1,5 @@
+# ROS2: RViz does not currently work.  Skipping this package for now.
+
 # interactive_marker_node
 
 Interactive-marker node.  This node creates an interactive marker, visualizable in rviz.

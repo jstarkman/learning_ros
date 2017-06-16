@@ -1,7 +1,7 @@
-//example pgm to set a model state in Gazebo
-// could also do w/ rosservice call gazebo/set_model_state
-#include <ros/ros.h> //ALWAYS need to include this
-//#include <gazebo_msgs/SetModelState.h>
+
+
+#include <ros/ros.h> 
+
 #include <gazebo_msgs/ModelState.h>
 #include <gazebo_msgs/SetModelState.h>
 #include <string.h>
@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
     ros::Duration half_sec(0.5);
     
-    // make sure service is available before attempting to proceed, else node will crash
+    
     bool service_ready = false;
     while (!service_ready) {
       service_ready = ros::service::exists("/gazebo/set_model_state",true);
@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     
     gazebo_msgs::SetModelState model_state_srv_msg;
     
-    //hard code, or could prompt, or could have command-line arg here:
+    
     model_state_srv_msg.request.model_state.model_name = "rect_prism";
     model_state_srv_msg.request.model_state.pose.position.x = 0.0;
     model_state_srv_msg.request.model_state.pose.position.y = 0.0;
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     model_state_srv_msg.request.model_state.pose.orientation.w = 1.0;
     
     
-    model_state_srv_msg.request.model_state.twist.linear.x= 0.02; //2cm/sec
+    model_state_srv_msg.request.model_state.twist.linear.x= 0.02; 
     model_state_srv_msg.request.model_state.twist.linear.y= 0.0;
     model_state_srv_msg.request.model_state.twist.linear.z= 0.0;
     
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     model_state_srv_msg.request.model_state.reference_frame = "world";
 
     set_model_state_client.call(model_state_srv_msg);
-        //make sure service call was successful
+        
         bool result = model_state_srv_msg.response.success;
         if (!result)
             ROS_WARN("service call to set_model_state failed!");

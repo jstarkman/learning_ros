@@ -1,4 +1,4 @@
-#include <ros/ros.h> //ALWAYS need to include this
+#include <ros/ros.h> 
 #include <gazebo_msgs/GetModelState.h>
 #include <gazebo_msgs/ApplyJointEffort.h>
 #include <gazebo_msgs/GetJointProperties.h>
@@ -8,12 +8,15 @@
 #include <std_msgs/Float64.h>
 #include <math.h>
 
+<<<<<<< Updated upstream
 //some "magic number" global params:
 const double Kp = 10.0; //controller gains
 const double Kv = 3;
 const double dt = 0.01;
 
 //a simple saturation function; provide saturation threshold, sat_val, and arg to be saturated, val
+=======
+>>>>>>> Stashed changes
 
 double sat(double val, double sat_val) {
     if (val > sat_val)
@@ -35,7 +38,16 @@ double min_periodicity(double theta_val) {
     return periodic_val;
 }
 
+<<<<<<< Updated upstream
 double g_pos_cmd = 0.0; //position command input-- global var
+=======
+double g_pos_cmd=0.0; 
+void posCmdCB(const std_msgs::msg::Float64& pos_cmd_msg) 
+{ 
+  ROS_INFO("received value of pos_cmd is: %f",pos_cmd_msg.data); 
+  g_pos_cmd = pos_cmd_msg.data;
+} 
+>>>>>>> Stashed changes
 
 void posCmdCB(const std_msgs::Float64& pos_cmd_msg) {
     ROS_INFO("received value of pos_cmd is: %f", pos_cmd_msg.data);
@@ -61,6 +73,18 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "minimal_joint_controller");
     ros::NodeHandle nh;
     ros::Duration half_sec(0.5);
+<<<<<<< Updated upstream
+=======
+    
+    
+    bool service_ready = false;
+    while (!service_ready) {
+      service_ready = ros::service::exists("/gazebo/apply_joint_effort",true);
+      ROS_INFO("waiting for apply_joint_effort service");
+      half_sec.sleep();
+    }
+    ROS_INFO("apply_joint_effort service exists");
+>>>>>>> Stashed changes
 
     // make sure services are available before attempting to proceed, else node will crash
     while (!test_services()) {
@@ -75,6 +99,20 @@ int main(int argc, char **argv) {
 
     gazebo_msgs::ApplyJointEffort effort_cmd_srv_msg;
     gazebo_msgs::GetJointProperties get_joint_state_srv_msg;
+<<<<<<< Updated upstream
+=======
+    
+    ros::Publisher trq_publisher = nh.advertise<std_msgs::msg::Float64>("jnt_trq", 1); 
+    ros::Publisher vel_publisher = nh.advertise<std_msgs::msg::Float64>("jnt_vel", 1);     
+    ros::Publisher pos_publisher = nh.advertise<std_msgs::msg::Float64>("jnt_pos", 1);  
+    ros::Publisher joint_state_publisher = nh.advertise<sensor_msgs::JointState>("joint_states", 1); 
+
+    ros::Subscriber pos_cmd_subscriber = nh.subscribe("pos_cmd",1,posCmdCB); 
+     
+    std_msgs::msg::Float64 trq_msg;
+    std_msgs::msg::Float64 q1_msg,q1dot_msg;
+    sensor_msgs::JointState joint_state_msg;
+>>>>>>> Stashed changes
 
     ros::Publisher trq_publisher = nh.advertise<std_msgs::Float64>("jnt_trq", 1);
     ros::Publisher vel_publisher = nh.advertise<std_msgs::Float64>("jnt_vel", 1);
@@ -92,6 +130,7 @@ int main(int argc, char **argv) {
     effort_cmd_srv_msg.request.effort = 0.0;
     effort_cmd_srv_msg.request.duration = duration;
     get_joint_state_srv_msg.request.joint_name = "joint1";
+<<<<<<< Updated upstream
 
     // set up the joint_state_msg fields to define a single joint,
     // called joint1, and initial position and vel values of 0
@@ -102,6 +141,21 @@ int main(int argc, char **argv) {
     
     //here is the main controller loop:
     while (ros::ok()) { 
+=======
+    
+    double q1_err;
+    double Kp = 10.0;
+    double Kv = 3;
+    double trq_cmd;
+
+    
+    
+	joint_state_msg.header.stamp = ros::Time::now();
+	joint_state_msg.name.push_back("joint1");
+        joint_state_msg.position.push_back(0.0);
+        joint_state_msg.velocity.push_back(0.0);
+    while(ros::ok()) {    
+>>>>>>> Stashed changes
         get_jnt_state_client.call(get_joint_state_srv_msg);
         q1 = get_joint_state_srv_msg.response.position[0];
         q1_msg.data = q1;
@@ -118,13 +172,34 @@ int main(int argc, char **argv) {
 
         q1_err = min_periodicity(g_pos_cmd - q1); //jnt angle err; watch for periodicity
 
+<<<<<<< Updated upstream
         trq_cmd = Kp * (q1_err) - Kv*q1dot;
         trq_msg.data = trq_cmd;
         trq_publisher.publish(trq_msg);
 
         effort_cmd_srv_msg.request.effort = trq_cmd; // send torque command to Gazebo
+=======
+	joint_state_publisher.publish(joint_state_msg);
+        
+        
+        
+        q1_err= g_pos_cmd-q1;
+        if (q1_err>M_PI) {
+            q1_err -= 2*M_PI;
+        }
+        if (q1_err< -M_PI) {
+            q1_err += 2*M_PI;
+        }        
+            
+        trq_cmd = Kp*(q1_err)-Kv*q1dot;
+        
+        trq_msg.data = trq_cmd;
+        trq_publisher.publish(trq_msg);
+        
+        effort_cmd_srv_msg.request.effort = trq_cmd;
+>>>>>>> Stashed changes
         set_trq_client.call(effort_cmd_srv_msg);
-        //make sure service call was successful
+        
         bool result = effort_cmd_srv_msg.response.success;
         if (!result)
             ROS_WARN("service call to apply_joint_effort failed!");

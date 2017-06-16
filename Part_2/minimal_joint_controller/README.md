@@ -1,3 +1,5 @@
+# ROS2: Gazebo does not currently work.  Skipping this package for now.
+
 # example_joint_controller
 This code illustrates how ROS can interact with Gazebo via Gazebo services.
 The example code implements joint servo control by accessing joint state via the service

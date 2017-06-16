@@ -1,7 +1,7 @@
-// IM_6dof_svc_client_test.cpp
-// use to test IM_6dof.cpp as node interactive_marker_node
-// send requests via service calls;
-//e.g. 
+
+
+
+
 #include<ros/ros.h>
 #include<std_msgs/Float32.h>
 #include<geometry_msgs/PoseStamped.h>
@@ -21,7 +21,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
     ros::init(argc, argv, "IM_6dof_svc_client_test");
-    ros::NodeHandle nh; //standard ros node handle    
+    ros::NodeHandle nh; 
     example_interactive_marker::ImNodeSvcMsg IM_6dof_srv_msg;
     geometry_msgs::Pose pose;
     geometry_msgs::PoseStamped poseStamped;
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
         IM_6dof_srv_msg.response.poseStamped_IM_current.pose.position.z);
 
     pose = IM_6dof_srv_msg.response.poseStamped_IM_current.pose;
-    pose.position.z += 0.1; // increment z value
+    pose.position.z += 0.1; 
     poseStamped.pose = pose;
     poseStamped.header.stamp = ros::Time::now();
     IM_6dof_srv_msg.request.cmd_mode = SET_NEW_MARKER_POSE;

@@ -1,3 +1,5 @@
+# ROS2: Gazebo does not currently work.  Skipping this package for now.
+
 # example_gazebo_set_state
 A simple node that shows how to communicate with Gazebo to set the state of a model.
 This node assumes the model in exmpl_models/rect_prism has been loaded into Gazebo.  

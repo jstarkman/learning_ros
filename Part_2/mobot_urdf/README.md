@@ -1,3 +1,5 @@
+# ROS2: Gazebo does not currently work.  Skipping this package for now.
+
 # mobot_urdf
 Contains mobot.xacro model of wheelchair-like robot.  Also has a launch file.
 

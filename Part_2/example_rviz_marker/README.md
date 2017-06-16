@@ -1,3 +1,5 @@
+# ROS2: RViz does not currently work.  Skipping this package for now.
+
 # example_rviz_marker
 This node illustrates how to display markers in rviz. 
 The service rviz_marker_svc expects a floating-point number, which is uses to 
