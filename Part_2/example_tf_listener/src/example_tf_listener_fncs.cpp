@@ -1,141 +1,126 @@
-//example_tf_listener_fncs.cpp:
-//wsn, March 2016
-//implementation of member functions of DemoTfListener class
+#include "example_tf_listener.hpp"
 
-#include "example_tf_listener.h"
-using namespace std;
+DemoTfListener::DemoTfListener(rclcpp::node::Node::SharedPtr node) : node(node)
+{
+  ROS_INFO("in class constructor of DemoTfListener");
+  tfListener_ = new tf2_ros::TransformListener(*tfBuffer_);
 
-//constructor: don't need nodehandle here, but could be handy if want to add a subscriber
-DemoTfListener::DemoTfListener(ros::NodeHandle* nodehandle):nh_(*nodehandle)
-{ 
-    ROS_INFO("in class constructor of DemoTfListener");
-    tfListener_ = new tf::TransformListener;  //create a transform listener and assign its pointer
-    //here, the tfListener_ is a pointer to this object, so must use -> instead of "." operator
-    //somewhat more complex than creating a tf_listener in "main()", but illustrates how
-    // to instantiate a tf_listener within a class
-    
-    // wait to start receiving valid tf transforms between base_link and link2:
-    // this example is specific to our mobot, which has a base_link and a link2
-    // lookupTransform will through errors until a valid chain has been found from target to source frames
-    bool tferr=true;
-    ROS_INFO("waiting for tf between link2 and base_link...");
-    tf::StampedTransform tfLink2WrtBaseLink; 
-    while (tferr) {
-        tferr=false;
-        try {
-                //try to lookup transform, link2-frame w/rt base_link frame; this will test if
-            // a valid transform chain has been published from base_frame to link2
-                tfListener_->lookupTransform("base_link", "link2", ros::Time(0), tfLink2WrtBaseLink);
-            } catch(tf::TransformException &exception) {
-                ROS_WARN("%s; retrying...", exception.what());
-                tferr=true;
-                ros::Duration(0.5).sleep(); // sleep for half a second
-                ros::spinOnce();                
-            }   
+  bool tferr = true;
+  ROS_INFO("waiting for tf between link2 and base_link...");
+  geometry_msgs::msg::TransformStamped tfLink2WrtBaseLink;
+  tf2::TimePoint t0;
+  tf2::Duration tDuration(10000000000);
+  while (tferr)
+  {
+    tferr = false;
+    try
+    {
+      tfLink2WrtBaseLink = tfBuffer_->lookupTransform("base_link", "link2", t0, tDuration);
     }
-    ROS_INFO("tf is good");
-    // from now on, tfListener will keep track of transforms; do NOT need ros::spin(), since
-    // tf_listener gets spawned as a separate thread
+    catch (tf2::TimeoutException& exception)
+    {
+      ROS_WARN("%s; retrying...", exception.what());
+      tferr = true;
+      rclcpp::WallRate(0.5).sleep();
+      rclcpp::spin_some(node);
+    }
+  }
+  ROS_INFO("tf is good");
 }
 
-
-//some conversion utilities:
-//getting a transform from a stamped transform is trickier than expected--there is not "get" fnc for transform
-tf::Transform DemoTfListener::get_tf_from_stamped_tf(tf::StampedTransform sTf) {
-   tf::Transform tf(sTf.getBasis(),sTf.getOrigin()); //construct a transform using elements of sTf
-   return tf;
+tf2::Transform DemoTfListener::get_tf_from_stamped_tf(geometry_msgs::msg::TransformStamped sTf)
+{
+  tf2::Quaternion tfQuat(sTf.transform.rotation.x, sTf.transform.rotation.y, sTf.transform.rotation.z,
+                         sTf.transform.rotation.w);
+  tf2::Vector3 tfVec(sTf.transform.translation.x, sTf.transform.translation.y, sTf.transform.translation.z);
+  tf2::Transform tf(tfQuat, tfVec);
+  return tf;
 }
 
-//a transform describes the position and orientation of a frame w/rt a reference frame
-//a Pose is a position and orientation of a frame of interest w/rt a reference frame
-// can re-interpret a transform as a named pose using this example function
-// the PoseStamped also has a header, which includes naming the reference frame
-geometry_msgs::PoseStamped DemoTfListener::get_pose_from_transform(tf::StampedTransform tf) {
-  //clumsy conversions--points, vectors and quaternions are different data types in tf vs geometry_msgs
-  geometry_msgs::PoseStamped stPose;
-  geometry_msgs::Quaternion quat;  //geometry_msgs object for quaternion
-  tf::Quaternion tfQuat; // tf library object for quaternion
-  tfQuat = tf.getRotation(); // member fnc to extract the quaternion from a transform
-  quat.x = tfQuat.x(); // copy the data from tf-style quaternion to geometry_msgs-style quaternion
-  quat.y = tfQuat.y();
-  quat.z = tfQuat.z();
-  quat.w = tfQuat.w();  
-  stPose.pose.orientation = quat; //set the orientation of our PoseStamped object from result
-  
-  // now do the same for the origin--equivalently, vector from parent to child frame 
-  tf::Vector3 tfVec;  //tf-library type
-  geometry_msgs::Point pt; //equivalent geometry_msgs type
-  tfVec = tf.getOrigin(); // extract the vector from parent to child from transform
-  pt.x = tfVec.getX(); //copy the components into geometry_msgs type
-  pt.y = tfVec.getY();
-  pt.z = tfVec.getZ();  
-  stPose.pose.position= pt; //and use this compatible type to set the position of the PoseStamped
-  stPose.header.frame_id = tf.frame_id_; //the pose is expressed w/rt this reference frame
-  stPose.header.stamp = tf.stamp_; // preserve the time stamp of the original transform
+geometry_msgs::msg::PoseStamped DemoTfListener::get_pose_from_transform(geometry_msgs::msg::TransformStamped tf)
+{
+  geometry_msgs::msg::PoseStamped stPose;
+  stPose.pose.orientation = tf.transform.rotation;
+
+  geometry_msgs::msg::Vector3 tfVec = tf.transform.translation;
+  geometry_msgs::msg::Point pt;
+  pt.x = tfVec.x;
+  pt.y = tfVec.y;
+  pt.z = tfVec.z;
+  stPose.pose.position = pt;
+  stPose.header.frame_id = tf.header.frame_id;
   return stPose;
 }
 
-//a function to multiply two stamped transforms;  this function checks to make sure the
-// multiplication is logical, e.g.: T_B/A * T_C/B = T_C/A
-// returns false if the two frames are inconsistent as sequential transforms
-// returns true if consistent A_stf and B_stf transforms, and returns result of multiply in C_stf
-// The reference frame and child frame are populated in C_stf accordingly
-bool DemoTfListener::multiply_stamped_tfs(tf::StampedTransform A_stf, 
-        tf::StampedTransform B_stf, tf::StampedTransform &C_stf) {
-   tf::Transform A,B,C; //simple transforms--not stamped
-  std::string str1 (A_stf.child_frame_id_); //want to compare strings to check consistency
-  std::string str2 (B_stf.frame_id_);
-  if (str1.compare(str2) != 0) { //SHOULD get that child frame of A is parent frame of B
-      std::cout<<"can't multiply transforms; mismatched frames"<<endl;
-    std::cout << str1 << " is not " << str2 << '\n'; 
+bool DemoTfListener::multiply_stamped_tfs(geometry_msgs::msg::TransformStamped A_stf,
+                                          geometry_msgs::msg::TransformStamped B_stf,
+                                          geometry_msgs::msg::TransformStamped& C_stf)
+{
+  tf2::Transform A, B, C;
+  std::string str1(A_stf.child_frame_id);
+  std::string str2(B_stf.header.frame_id);
+  if (str1.compare(str2) != 0)
+  {
+    std::cout << "can't multiply transforms; mismatched frames" << std::endl;
+    std::cout << str1 << " is not " << str2 << std::endl;
     return false;
   }
-   //if here, the named frames are logically consistent
-   A = get_tf_from_stamped_tf(A_stf); // get the transform from the stamped transform
-   B = get_tf_from_stamped_tf(B_stf);
-   C = A*B; //multiplication is defined for transforms 
-   C_stf.frame_id_ = A_stf.frame_id_; //assign appropriate parent and child frames to result
-   C_stf.child_frame_id_ = B_stf.child_frame_id_;
-   C_stf.setOrigin(C.getOrigin()); //populate the origin and orientation of the result
-   C_stf.setBasis(C.getBasis());
-   C_stf.stamp_ = ros::Time::now(); //assign the time stamp to current time; 
-     // alternatively, could assign this to the OLDER of A or B transforms
-   return true; //if got here, the multiplication is valid
+
+  A = get_tf_from_stamped_tf(A_stf);
+  B = get_tf_from_stamped_tf(B_stf);
+  C = A * B;
+  C_stf.header.frame_id = A_stf.header.frame_id;
+  C_stf.child_frame_id = B_stf.child_frame_id;
+
+  tf2::Vector3 cVec = C.getOrigin();
+  C_stf.transform.translation.x = cVec.x();
+  C_stf.transform.translation.y = cVec.y();
+  C_stf.transform.translation.z = cVec.z();
+
+  tf2::Matrix3x3 cBasis = C.getBasis();
+  tf2::Quaternion cQuat;
+  cBasis.getRotation(cQuat);
+  C_stf.transform.rotation.x = cQuat.x();
+  C_stf.transform.rotation.y = cQuat.y();
+  C_stf.transform.rotation.z = cQuat.z();
+  C_stf.transform.rotation.w = cQuat.w();
+  return true;
 }
 
-//fnc to print components of a transform
-void DemoTfListener::printTf(tf::Transform tf) {
-    tf::Vector3 tfVec;
-    tf::Matrix3x3 tfR;
-    tf::Quaternion quat;
-    tfVec = tf.getOrigin();
-    cout<<"vector from reference frame to to child frame: "<<tfVec.getX()<<","<<tfVec.getY()<<","<<tfVec.getZ()<<endl;
-    tfR = tf.getBasis();
-    cout<<"orientation of child frame w/rt reference frame: "<<endl;
-    tfVec = tfR.getRow(0);
-    cout<<tfVec.getX()<<","<<tfVec.getY()<<","<<tfVec.getZ()<<endl;
-    tfVec = tfR.getRow(1);
-    cout<<tfVec.getX()<<","<<tfVec.getY()<<","<<tfVec.getZ()<<endl;    
-    tfVec = tfR.getRow(2);
-    cout<<tfVec.getX()<<","<<tfVec.getY()<<","<<tfVec.getZ()<<endl; 
-    quat = tf.getRotation();
-    cout<<"quaternion: " <<quat.x()<<", "<<quat.y()<<", "
-            <<quat.z()<<", "<<quat.w()<<endl;   
+void DemoTfListener::printTf(tf2::Transform tf)
+{
+  tf2::Vector3 tfVec;
+  tf2::Matrix3x3 tfR;
+  tf2::Quaternion quat;
+  tfVec = tf.getOrigin();
+  std::cout << "vector from reference frame to to child frame: " << tfVec.getX() << "," << tfVec.getY() << ","
+            << tfVec.getZ() << std::endl;
+  tfR = tf.getBasis();
+  std::cout << "orientation of child frame w/rt reference frame: " << std::endl;
+  tfVec = tfR.getRow(0);
+  std::cout << tfVec.getX() << "," << tfVec.getY() << "," << tfVec.getZ() << std::endl;
+  tfVec = tfR.getRow(1);
+  std::cout << tfVec.getX() << "," << tfVec.getY() << "," << tfVec.getZ() << std::endl;
+  tfVec = tfR.getRow(2);
+  std::cout << tfVec.getX() << "," << tfVec.getY() << "," << tfVec.getZ() << std::endl;
+  quat = tf.getRotation();
+  std::cout << "quaternion: " << quat.x() << ", " << quat.y() << ", " << quat.z() << ", " << quat.w() << std::endl;
 }
 
-//fnc to print components of a stamped transform
-void DemoTfListener::printStampedTf(tf::StampedTransform sTf){
-    tf::Transform tf;
-    cout<<"frame_id: "<<sTf.frame_id_<<endl;
-    cout<<"child_frame_id: "<<sTf.child_frame_id_<<endl; 
-    tf = get_tf_from_stamped_tf(sTf); //extract the tf from the stamped tf  
-    printTf(tf); //and print its components      
-    }
+void DemoTfListener::printStampedTf(geometry_msgs::msg::TransformStamped sTf)
+{
+  tf2::Transform tf;
+  std::cout << "frame_id: " << sTf.header.frame_id << std::endl;
+  std::cout << "child_frame_id: " << sTf.child_frame_id << std::endl;
+  tf = get_tf_from_stamped_tf(sTf);
+  printTf(tf);
+}
 
-//fnc to print components of a stamped pose
-void DemoTfListener::printStampedPose(geometry_msgs::PoseStamped stPose){
-    cout<<"frame id = "<<stPose.header.frame_id<<endl;
-    cout<<"origin: "<<stPose.pose.position.x<<", "<<stPose.pose.position.y<<", "<<stPose.pose.position.z<<endl;
-    cout<<"quaternion: "<<stPose.pose.orientation.x<<", "<<stPose.pose.orientation.y<<", "
-            <<stPose.pose.orientation.z<<", "<<stPose.pose.orientation.w<<endl;
+void DemoTfListener::printStampedPose(geometry_msgs::msg::PoseStamped stPose)
+{
+  std::cout << "frame id = " << stPose.header.frame_id << std::endl;
+  std::cout << "origin: " << stPose.pose.position.x << ", " << stPose.pose.position.y << ", " << stPose.pose.position.z
+            << std::endl;
+  std::cout << "quaternion: " << stPose.pose.orientation.x << ", " << stPose.pose.orientation.y << ", "
+            << stPose.pose.orientation.z << ", " << stPose.pose.orientation.w << std::endl;
 }
