@@ -1,4 +1,12 @@
 # example_opencv
+
+For a ROS2-friendly version, see `ros2_ws/src/ros2/demos/intra_process_demo/`,
+specifically `src/image_pipeline/*` under that.  Note that, as of ROS2 beta 1,
+FastRTPS cannot handle large payloads easily, so image-heavy workloads should
+stay out of ROS2 for now.
+
+--------------------------------------------------------------------------------
+
 Simple examples of using open_cv with ROS.  Nodes here subscribe to images on the topic
 "simple_camera/image_raw".  Emulated camera images are published to this topic via the
 model in package "simple_camera_model".  One can start gazebo simulation of a simple,

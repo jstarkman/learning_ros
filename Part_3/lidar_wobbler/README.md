@@ -1,8 +1,10 @@
 # lidar_wobbler
+
 Contains a minimal model for a moving LIDAR.  Can command motions of LIDAR rotation via joint1.
 View result in rviz (with persistence on laserscan topic).
 
 ## Example usage
+
 `(optirun) roslaunch gazebo_ros empty_world.launch`
 Optirun is an option (if needed) to invoke use of GPU, since LIDAR plug-in uses GPU.
 `roslaunch lidar_wobbler lidar_wobbler.launch`
