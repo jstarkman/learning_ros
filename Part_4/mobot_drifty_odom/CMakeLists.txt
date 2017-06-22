@@ -1,40 +1,26 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
+
 project(mobot_drifty_odom)
 
-find_package(catkin_simple REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(rcl REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rmw REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
-#uncomment next line to use OpenCV library
-#find_package(OpenCV REQUIRED)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-#uncomment the next line to use the point-cloud library
-#find_package(PCL 1.7 REQUIRED)
+set(target mobot_drifty_odom)
 
-#uncomment the following 4 lines to use the Eigen library
-#find_package(cmake_modules REQUIRED)
-#find_package(Eigen3 REQUIRED)
-#include_directories(${EIGEN3_INCLUDE_DIR})
-#add_definitions(${EIGEN_DEFINITIONS})
+add_executable(${target} src/${target}.cpp)
+ament_target_dependencies(${target}
+  "rcl" "rclcpp" "sensor_msgs" "nav_msgs" "geometry_msgs")
+install(TARGETS ${target}
+DESTINATION bin)
 
-catkin_simple()
-
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
-
-# C++0x support - not quite the same as final C++11!
-# use carefully;  can interfere with point-cloud library
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
-# Libraries: uncomment the following and edit arguments to create a new library
-# cs_add_library(my_lib src/my_lib.cpp)   
-
-# Executables: uncomment the following and edit arguments to compile new nodes
-# may add more of these lines for more nodes from the same package
-cs_add_executable(mobot_drifty_odom src/mobot_drifty_odom.cpp)
-
-#the following is required, if desire to link a node in this package with a library created in this same package
-# edit the arguments to reference the named node and named library within this package
-# target_link_library(example my_lib)
-
-cs_install()
-cs_export()
-    
+ament_package()
