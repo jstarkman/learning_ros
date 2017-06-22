@@ -4,8 +4,10 @@ Package to illustrate how to combine odometry, IMU and GPS data into merged
 estimate of localization (without benefit of a LIDAR and map)
 
 ## Example usage
+
 start up Gazebo:
 `roslaunch gazebo_ros empty_world.launch`
+
 start up a mobot with an IMU:
 `roslaunch mobot_urdf mobot_w_imu.launch` 
   see topic: /imu_data (use z-component of angular velocity)
@@ -31,14 +33,14 @@ Try moving the robot with:
 and observe convergence of pose estimates with rqt_plot
 
 ## Running tests/demos
-use rqt_plot to view  /gazebo_mobot_pose/position/x and /y
-compare to mobot_localization/pose/position/x and /y
-also plot /true_yaw and /yaw_estimate
-/gazebo_mobot_noisy_pose/position/x and /y show the noisy gps values used
+
+- use `rqt_plot` to view  `/gazebo_mobot_pose/position/x` and `/y`
+- compare to `mobot_localization/pose/position/x` and `/y`
+- also plot `/true_yaw` and `/yaw_estimate`
+- `/gazebo_mobot_noisy_pose/position/x` and `/y` show the noisy gps values used
 
 can change values of noise in gps, or add noise/offset to IMU omega_z;
 can change feedback gains in localization_w_gps:
 K_YAW should be between 0 and 1
 K_GPS should be between 0 and 1
 L_MOVE is length of displacement between gps-based yaw updates
-   
