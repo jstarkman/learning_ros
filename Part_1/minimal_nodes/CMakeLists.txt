@@ -31,6 +31,7 @@ endfunction()
 custom_executable(minimal_publisher)
 custom_executable(sleepy_minimal_publisher)
 custom_executable(minimal_subscriber)
+custom_executable(minimal_subscriber_lambda)
 custom_executable(minimal_simulator)
 custom_executable(minimal_controller)
 
