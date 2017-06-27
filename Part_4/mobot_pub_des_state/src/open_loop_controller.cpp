@@ -1,21 +1,18 @@
-#include <ros/ros.h>
-#include <geometry_msgs/Twist.h>
-#include <nav_msgs/Odometry.h>
+#include "geometry_msgs/msg/twist.hpp"
+#include "nav_msgs/msg/odometry.hpp"
+#include "rclcpp/rclcpp.hpp"
 
-//node to receive desired states and republish the twist as cmd_vel commands
-ros::Publisher g_twist_republisher;
+rclcpp::publisher::Publisher<geometry_msgs::msg::Twist>::SharedPtr g_twist_republisher;
 
-//simply copy the desired twist and republish it to cmd_vel
-void desStateCallback(const nav_msgs::Odometry& des_state) {
-    geometry_msgs::Twist twist = des_state.twist.twist;
-    g_twist_republisher.publish(twist);    
+int main(int argc, char** argv)
+{
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::node::Node::make_shared("open_loop_controller");
+  g_twist_republisher = node->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", rmw_qos_profile_default);
+
+  auto des_state_subscriber = node->create_subscription<nav_msgs::msg::Odometry>(
+      "/desState", [](const nav_msgs::msg::Odometry::SharedPtr msg) { g_twist_republisher->publish(msg->twist.twist); },
+      rmw_qos_profile_default);
+
+  rclcpp::spin(node);
 }
-
-int main(int argc, char **argv) {
-    ros::init(argc, argv, "open_loop_controller"); 
-    ros::NodeHandle n; // two lines to create a publisher object that can talk to ROS
-    g_twist_republisher = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
-    ros::Subscriber des_state_subscriber = n.subscribe("/desState",1,desStateCallback); 
-    ros::spin();
-}
-
