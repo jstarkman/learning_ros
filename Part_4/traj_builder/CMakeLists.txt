@@ -1,40 +1,35 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
+
 project(traj_builder)
 
-find_package(catkin_simple REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
-#uncomment next line to use OpenCV library
-#find_package(OpenCV REQUIRED)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-#uncomment the next line to use the point-cloud library
-#find_package(PCL 1.7 REQUIRED)
+include_directories(include)
+ament_export_include_directories(include)
 
-#uncomment the following 4 lines to use the Eigen library
-#find_package(cmake_modules REQUIRED)
-#find_package(Eigen3 REQUIRED)
-#include_directories(${EIGEN3_INCLUDE_DIR})
-#add_definitions(${EIGEN_DEFINITIONS})
+add_library(${PROJECT_NAME} SHARED src/traj_builder.cpp)
+ament_target_dependencies(${PROJECT_NAME}
+  rclcpp std_msgs nav_msgs geometry_msgs
+  )
+ament_export_libraries(${PROJECT_NAME})
 
-catkin_simple()
+set(target traj_builder_example_main)
 
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
+add_executable(${target} src/${target}.cpp)
+target_link_libraries(${target} ${PROJECT_NAME})
+ament_target_dependencies(${target} "rclcpp" "std_msgs" "nav_msgs" "geometry_msgs" ${PROJECT_NAME})
+install(TARGETS ${target} DESTINATION bin)
 
-# C++0x support - not quite the same as final C++11!
-# use carefully;  can interfere with point-cloud library
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+ament_package()
 
-# Libraries: uncomment the following and edit arguments to create a new library
-cs_add_library(traj_builder src/traj_builder.cpp)   
-
-# Executables: uncomment the following and edit arguments to compile new nodes
-# may add more of these lines for more nodes from the same package
-cs_add_executable(traj_builder_example_main src/traj_builder_example_main.cpp)
-
-#the following is required, if desire to link a node in this package with a library created in this same package
-# edit the arguments to reference the named node and named library within this package
-target_link_libraries(traj_builder_example_main traj_builder)
-
-cs_install()
-cs_export()
-    
+install(DIRECTORY include/
+  DESTINATION include
+)
