@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>minimal_nodes_py</name>
+  <version>0.0.0</version>
+  <description>The minimal_nodes_py package, blatantly ripped from the ROS2 docs.</description>
+  <maintainer email="wsn@case.edu">Wyatt Newman</maintainer>
+  <license>TODO</license>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>example_interfaces</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

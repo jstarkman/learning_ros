@@ -1,0 +1,51 @@
+from setuptools import setup
+
+setup(
+    name='minimal_nodes',
+    version='0.0.0',
+    packages=[],
+    py_modules=[
+        "scripts.client_async_member_function",
+        "scripts.client_async",
+        "scripts.client",
+        "scripts.publisher_local_function",
+        "scripts.publisher_member_function",
+        "scripts.publisher_old_school",
+        "scripts.service_member_function",
+        "scripts.service",
+        "scripts.subscriber_lambda",
+        "scripts.subscriber_member_function",
+        "scripts.subscriber_old_school",
+    ],
+    install_requires=['setuptools'],
+    author='Mikael Arguedas',
+    author_email='Mikael@osrfoundation.org',
+    maintainer='Mikael Arguedas',
+    maintainer_email='mikael@osrfoundation.org',
+    keywords=['ROS'],
+    classifiers=[
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python',
+        'Topic :: Software Development',
+    ],
+    description='Examples of minimal subscribers using rclpy.',
+    license='Apache License, Version 2.0',
+    test_suite='test',
+    entry_points={
+        'console_scripts': [
+            # JAS modified to merge all into one `scripts` directory
+            'minimal_nodes_py_sub_old_school = subscriber_old_school:main',
+            'minimal_nodes_py_sub_lambda = subscriber_lambda:main',
+            'minimal_nodes_py_sub_member_function = subscriber_member_function:main',
+            'minimal_nodes_py_pub_old_school = publisher_old_school:main',
+            'minimal_nodes_py_pub_local_function = publisher_local_function:main',
+            'minimal_nodes_py_pub_member_function = publisher_member_function:main',
+            'minimal_nodes_py_client = client:main',
+            'minimal_nodes_py_client_async = client_async:main',
+            'minimal_nodes_py_client_async_member_function = client_async_member_function:main',
+            'minimal_nodes_py_service = service:main',
+            'minimal_nodes_py_service_member_function = service_member_function:main',
+        ],
+    },
+)
