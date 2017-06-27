@@ -171,22 +171,30 @@ geometry_msgs::msg::PoseStamped XformUtils::get_pose_from_stamped_tf(geometry_ms
   return stPose;
 }
 
-geometry_msgs::msg::TransformStamped
-XformUtils::convert_poseStamped_to_stampedTransform(geometry_msgs::msg::PoseStamped stPose, std::string child_frame_id)
+geometry_msgs::msg::TransformStamped XformUtils::convert_pose_to_stampedTransform(geometry_msgs::msg::Pose pose,
+                                                                                  std::string child_frame_id)
 {
   tf2::Transform transform;
-  geometry_msgs::msg::Pose pose = stPose.pose;
 
   geometry_msgs::msg::Point position = pose.position;
   geometry_msgs::msg::Quaternion orientation = pose.orientation;
   transform.setOrigin(tf2::Vector3(position.x, position.y, position.z));
-  printStampedPose(stPose);
   transform.setRotation(tf2::Quaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+
   geometry_msgs::msg::TransformStamped stTransform;
-  stTransform.header = stPose.header;
+  stTransform.header = std_msgs::msg::Header();
+  builtin_interfaces::msg::Time t0;
+  t0.sec = (double)std::chrono::system_clock::now().time_since_epoch().count();
+  stTransform.header.stamp = t0;
   stTransform.child_frame_id = child_frame_id;
   stTransform.transform = XformUtils::get_stamped_tf_from_tf(transform).transform;
   return stTransform;
+}
+
+geometry_msgs::msg::TransformStamped
+XformUtils::convert_poseStamped_to_stampedTransform(geometry_msgs::msg::PoseStamped stPose, std::string child_frame_id)
+{
+  return convert_pose_to_stampedTransform(stPose.pose, child_frame_id);
 }
 
 void XformUtils::test_stf(geometry_msgs::msg::PoseStamped stPose)

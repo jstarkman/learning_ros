@@ -44,6 +44,8 @@ public:
   Eigen::Affine3d transformPoseToEigenAffine3d(geometry_msgs::msg::Pose pose);
   Eigen::Affine3d transformPoseToEigenAffine3d(geometry_msgs::msg::PoseStamped stPose);
   Eigen::Affine3d transformStampedTfToEigenAffine3d(geometry_msgs::msg::TransformStamped sTf);
+  geometry_msgs::msg::TransformStamped convert_pose_to_stampedTransform(geometry_msgs::msg::Pose pose,
+                                                                        std::string child_frame_id);
   geometry_msgs::msg::TransformStamped convert_poseStamped_to_stampedTransform(geometry_msgs::msg::PoseStamped stPose,
                                                                                std::string child_frame_id);
   geometry_msgs::msg::PoseStamped get_pose_stamped_from_odom(nav_msgs::msg::Odometry odom);
