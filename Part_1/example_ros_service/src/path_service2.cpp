@@ -1,10 +1,10 @@
+#include "nav_msgs/msg/path.hpp"
 #include <math.h>
 #include <iostream>
 #include <string>
 #include "example_ros_service/srv/path_srv.hpp"
 #include "geometry_msgs/msg/pose.hpp"
 #include "geometry_msgs/msg/twist.hpp"
-#include "nav_msgs/msg/path.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 /* ugly hack until rosconsole works */
