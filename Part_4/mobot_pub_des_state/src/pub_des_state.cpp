@@ -39,53 +39,59 @@ DesStatePublisher::DesStatePublisher(rclcpp::node::Node::SharedPtr node) : node_
 void DesStatePublisher::initializeServices()
 {
   std::cout << "Initializing Services" << std::endl;
-  estop_service_ = node->create_service<std_srvs::srv::Trigger>(
-      "estop_service", [](const std::shared_ptr<rmw_request_id_t> request_header,
-                          const std::shared_ptr<std_srvs::srv::Trigger::Request> request,
-                          std::shared_ptr<std_srvs::srv::Trigger::Response> response) {
+  estop_service_ = node_->create_service<std_srvs::srv::Trigger>(
+      "estop_service", [this](const std::shared_ptr<rmw_request_id_t> request_header,
+                              const std::shared_ptr<std_srvs::srv::Trigger::Request> request,
+                              std::shared_ptr<std_srvs::srv::Trigger::Response> response) {
+        ignore(request_header);
+        ignore(request);
         ROS_WARN("estop!!");
         e_stop_trigger_ = true;
-        return true;
+        response->success = true;
       });
-  estop_clear_service_ = node->create_service<std_srvs::srv::Trigger>(
-      "clear_estop_service", [](const std::shared_ptr<rmw_request_id_t> request_header,
-                                const std::shared_ptr<std_srvs::srv::Trigger::Request> request,
-                                std::shared_ptr<std_srvs::srv::Trigger::Response> response) {
+  estop_clear_service_ = node_->create_service<std_srvs::srv::Trigger>(
+      "clear_estop_service", [this](const std::shared_ptr<rmw_request_id_t> request_header,
+                                    const std::shared_ptr<std_srvs::srv::Trigger::Request> request,
+                                    std::shared_ptr<std_srvs::srv::Trigger::Response> response) {
+        ignore(request_header);
+        ignore(request);
         ROS_INFO("estop reset");
         e_stop_reset_ = true;
-        return true;
-
+        response->success = true;
       });
-  flush_path_queue_ = node->create_service<std_srvs::srv::Trigger>(
-      "flush_path_queue_service", [](const std::shared_ptr<rmw_request_id_t> request_header,
-                                     const std::shared_ptr<std_srvs::srv::Trigger::Request> request,
-                                     std::shared_ptr<std_srvs::srv::Trigger::Response> response) {
+  flush_path_queue_ = node_->create_service<std_srvs::srv::Trigger>(
+      "flush_path_queue_service", [this](const std::shared_ptr<rmw_request_id_t> request_header,
+                                         const std::shared_ptr<std_srvs::srv::Trigger::Request> request,
+                                         std::shared_ptr<std_srvs::srv::Trigger::Response> response) {
+        ignore(request_header);
+        ignore(request);
         ROS_WARN("flushing path queue");
         while (!path_queue_.empty())
         {
           path_queue_.pop();
         }
-        return true;
+        response->success = true;
       });
-  append_path_ = node->create_service<mobot_pub_des_state::srv::Path>(
-      "append_path_queue_service", [](const std::shared_ptr<rmw_request_id_t> request_header,
-                                      const std::shared_ptr<mobot_pub_des_state::srv::Path::Request> request,
-                                      std::shared_ptr<mobot_pub_des_state::srv::Path::Response> response) {
-        int npts = request.path.poses.size();
+  append_path_ = node_->create_service<mobot_pub_des_state::srv::Path>(
+      "append_path_queue_service", [this](const std::shared_ptr<rmw_request_id_t> request_header,
+                                          const std::shared_ptr<mobot_pub_des_state::srv::Path::Request> request,
+                                          std::shared_ptr<mobot_pub_des_state::srv::Path::Response> response) {
+        ignore(request_header);
+        int npts = request->path.poses.size();
         ROS_INFO("appending path queue with %d points", npts);
         for (int i = 0; i < npts; i++)
         {
-          path_queue_.push(request.path.poses[i]);
+          path_queue_.push(request->path.poses[i]);
         }
-        return true;
+        response->status = true;
       });
 }
 
 void DesStatePublisher::initializePublishers()
 {
   ROS_INFO("Initializing Publishers");
-  desired_state_publisher_ = node->create_publisher<nav_msgs::msg::Odometry>("/desState", rmw_qos_profile_default);
-  des_psi_publisher_ = node->create_publisher<std_msgs::msg::Float64>("/desPsi", rmw_qos_profile_default);
+  desired_state_publisher_ = node_->create_publisher<nav_msgs::msg::Odometry>("/desState", rmw_qos_profile_default);
+  des_psi_publisher_ = node_->create_publisher<std_msgs::msg::Float64>("/desPsi", rmw_qos_profile_default);
 }
 
 void DesStatePublisher::set_init_pose(double x, double y, double psi)
@@ -118,6 +124,7 @@ void DesStatePublisher::pub_next_state()
     }
   }
 
+  builtin_interfaces::msg::Time t0;
   switch (motion_mode_)
   {
     case E_STOPPED:
@@ -126,7 +133,6 @@ void DesStatePublisher::pub_next_state()
 
     case HALTING:
       current_des_state_ = des_state_vec_[traj_pt_i_];
-      builtin_interfaces::msg::Time t0;
       t0.sec = (double)std::chrono::system_clock::now().time_since_epoch().count();
       current_des_state_.header.stamp = t0;
 
@@ -153,9 +159,8 @@ void DesStatePublisher::pub_next_state()
     case PURSUING_SUBGOAL:
       current_des_state_ = des_state_vec_[traj_pt_i_];
       current_pose_.pose = current_des_state_.pose.pose;
-      desired_state_publisher_.publish(current_des_state_);
+      desired_state_publisher_->publish(current_des_state_);
 
-      builtin_interfaces::msg::Time t0;
       t0.sec = (double)std::chrono::system_clock::now().time_since_epoch().count();
       current_des_state_.header.stamp = t0;
 

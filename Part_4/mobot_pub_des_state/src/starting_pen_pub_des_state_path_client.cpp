@@ -26,14 +26,7 @@ int main(int argc, char** argv)
   auto client = node->create_client<mobot_pub_des_state::srv::Path>("append_path_queue_service");
 
   geometry_msgs::msg::Quaternion quat;
-
-  while (!client.exists())
-  {
-    ROS_INFO("waiting for service...");
-    rclcpp::WallRate(1.0).sleep();
-  }
-  ROS_INFO("connected client to service");
-  mobot_pub_des_state::srv::Path path_srv;
+  auto path_srv = std::make_shared<mobot_pub_des_state::srv::Path::Request>();
 
   geometry_msgs::msg::PoseStamped pose_stamped;
   pose_stamped.header.frame_id = "world";
@@ -41,24 +34,24 @@ int main(int argc, char** argv)
   pose.position.x = 0.0;
   pose.position.y = 7.0;
   pose.position.z = 0.0;
-  quat = convertPlanarPhi2Quaternion(3.14);
+  quat = convertPlanarPhi2Quaternion(0);
   pose.orientation = quat;
   pose_stamped.pose = pose;
-  path_srv.request.path.poses.push_back(pose_stamped);
+  path_srv->path.poses.push_back(pose_stamped);
 
   pose.position.y = 7.0;
   pose.position.x = -8.0;
   pose_stamped.pose = pose;
-  path_srv.request.path.poses.push_back(pose_stamped);
+  path_srv->path.poses.push_back(pose_stamped);
 
   pose.position.x = -5.0;
   pose_stamped.pose = pose;
-  path_srv.request.path.poses.push_back(pose_stamped);
+  path_srv->path.poses.push_back(pose_stamped);
 
   pose_stamped.pose.orientation = convertPlanarPhi2Quaternion(0);
-  path_srv.request.path.poses.push_back(pose_stamped);
+  path_srv->path.poses.push_back(pose_stamped);
 
-  client->call(path_srv);
+  client->async_send_request(path_srv);
 
   return 0;
 }

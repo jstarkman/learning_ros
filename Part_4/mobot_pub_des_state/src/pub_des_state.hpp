@@ -12,6 +12,12 @@
 #define ROS_INFO printf
 #define ROS_WARN printf
 
+// https://stackoverflow.com/a/15764679
+template <typename T>
+void ignore(T &&)
+{
+}
+
 // constants and parameters:
 const double dt = 0.02;  // send desired-state messages at fixed rate, e.g. 0.02 sec = 50Hz
 // dynamic parameters: should be tuned for target system
@@ -22,15 +28,22 @@ const double omega_max = 1.0;       // 1 rad/sec
 const double path_move_tol = 0.01;  // if path points are within 1cm, fuggidaboutit
 
 // define some mode keywords
-const int E_STOPPED = 0;
-const int DONE_W_SUBGOAL = 1;
-const int PURSUING_SUBGOAL = 2;
-const int HALTING = 3;
+enum SubgoalState
+{
+  E_STOPPED,
+  DONE_W_SUBGOAL,
+  PURSUING_SUBGOAL,
+  HALTING
+};
+// const int E_STOPPED = 0;
+// const int DONE_W_SUBGOAL = 1;
+// const int PURSUING_SUBGOAL = 2;
+// const int HALTING = 3;
 
 class DesStatePublisher
 {
 private:
-  rclcpp::node::Node::SharedPtr node;
+  rclcpp::node::Node::SharedPtr node_;
 
   nav_msgs::msg::Path path_;
   std::vector<nav_msgs::msg::Odometry> des_state_vec_;
@@ -47,7 +60,7 @@ private:
   double des_psi_;
   std::queue<geometry_msgs::msg::PoseStamped> path_queue_;
 
-  int motion_mode_;
+  SubgoalState motion_mode_;
   bool e_stop_trigger_;
   bool e_stop_reset_;
   int traj_pt_i_;
@@ -64,7 +77,7 @@ private:
   rclcpp::service::Service<std_srvs::srv::Trigger>::SharedPtr estop_service_;
   rclcpp::service::Service<std_srvs::srv::Trigger>::SharedPtr estop_clear_service_;
   rclcpp::service::Service<std_srvs::srv::Trigger>::SharedPtr flush_path_queue_;
-  rclcpp::service::Service<std_srvs::srv::Trigger>::SharedPtr append_path_;
+  rclcpp::service::Service<mobot_pub_des_state::srv::Path>::SharedPtr append_path_;
 
   rclcpp::publisher::Publisher<nav_msgs::msg::Odometry>::SharedPtr desired_state_publisher_;
   rclcpp::publisher::Publisher<std_msgs::msg::Float64>::SharedPtr des_psi_publisher_;
@@ -76,11 +89,11 @@ private:
 
 public:
   DesStatePublisher(rclcpp::node::Node::SharedPtr node);
-  int get_motion_mode()
+  SubgoalState get_motion_mode()
   {
     return motion_mode_;
   }
-  void set_motion_mode(int mode)
+  void set_motion_mode(SubgoalState mode)
   {
     motion_mode_ = mode;
   }

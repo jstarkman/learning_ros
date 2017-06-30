@@ -6,17 +6,18 @@
   <description>The mobot_pub_des_state package</description>
   <maintainer email="wsn@case.edu">Wyatt Newman</maintainer>
   <license>TODO</license>
-
+  <!-- buildtools -->
   <buildtool_depend>ament_cmake</buildtool_depend>
-
+  <!-- specific dependencies -->
+  <build_depend>rosidl_default_generators</build_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <!-- build and exec dependencies -->
   <depend>rclcpp</depend>
   <depend>rmw_implementation</depend>
   <depend>std_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>traj_builder</depend>
-  <depend>rosidl_default_runtime</depend>
-
   <export>
     <build_type>ament_cmake</build_type>
   </export>
