@@ -17,9 +17,14 @@ ament_export_include_directories(include)
 add_library(${PROJECT_NAME} SHARED src/example_ros_class.cpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp std_msgs std_srvs class_loader)
-ament_export_libraries(${PROJECT_NAME})
-# install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE "CREATING_A_ROS_LIBRARY_BUILDING_LIBRARY")
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
 
 function(add_link_install_exe target link_to_whom files)
   add_executable(${target} ${files})

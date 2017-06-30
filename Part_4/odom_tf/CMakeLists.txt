@@ -25,7 +25,8 @@ ament_export_include_directories(include)
 
 add_library(${PROJECT_NAME} SHARED src/OdomTf.cpp)
 ament_target_dependencies(${PROJECT_NAME}
-  rclcpp std_msgs nav_msgs geometry_msgs tf2 xform_utils)
+  rclcpp std_msgs nav_msgs geometry_msgs tf2 tf2_ros tf2_msgs xform_utils
+  )
 ament_export_libraries(${PROJECT_NAME})
 
 set(target odom_tf_demo)

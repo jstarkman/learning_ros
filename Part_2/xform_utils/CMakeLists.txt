@@ -23,7 +23,15 @@ ament_export_include_directories(include)
 add_library(${PROJECT_NAME} SHARED src/xform_utils.cpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp std_msgs nav_msgs geometry_msgs tf2)
-ament_export_libraries(${PROJECT_NAME})
+# ament_export_libraries(${PROJECT_NAME})
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE "XFORM_UTILS_BUILDING_LIBRARY")
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
 
 set(target example_xform_utils)
 

@@ -19,7 +19,16 @@ add_library(${PROJECT_NAME} SHARED src/traj_builder.cpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp std_msgs nav_msgs geometry_msgs
   )
-ament_export_libraries(${PROJECT_NAME})
+# ament_export_libraries(${PROJECT_NAME})
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE "TRAJ_BUILDER_BUILDING_LIBRARY")
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
 
 set(target traj_builder_example_main)
 
