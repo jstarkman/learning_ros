@@ -1,0 +1,8 @@
+The following packages have not been ported due to dependencies on packages
+presently unavailable in ROS2, including actionlib, gazebo_msgs, nav_core,
+old-style launchers, &c.
+
+example_gazebo_set_state
+example_interactive_marker
+example_rviz_marker
+minimal_joint_controller
