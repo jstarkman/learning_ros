@@ -27,5 +27,3 @@ Then run the following launch file:
 
 Subgoals along the global path will be displayed in rviz using the triad-display node from the
 package example_rviz_marker.
-
-

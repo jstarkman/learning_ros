@@ -1,0 +1,16 @@
+The following packages have not been ported due to dependencies on packages
+presently unavailable in ROS2, including actionlib, gazebo_msgs, nav_core,
+old-style launchers, &c.
+
+example_move_base_client
+example_nav_plugin
+mobot_gazebo_state
+mobot_mapping
+mobot_nav_config
+mobot_with_plugin
+navigator
+test_plugin
+
+Additionally, while odom_tf has been ported, issues in the conversion from tf to
+tf2 mean that that package does not work either.  Since lin_steering depends on
+odom_tf, it also has not been ported.

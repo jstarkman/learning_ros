@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# replacing these lines
+# <node name="mobot_drifty_odom" pkg="mobot_drifty_odom" type= "mobot_drifty_odom"/>
+# <node name="mobot_pub_des_state" pkg="mobot_pub_des_state" type= "mobot_pub_des_state"/>
+
+. ~/ros2_ws/install/local_setup.sh
+
+trap 'kill $pid_mobot_drifty_odom; kill $pid_mobot_pub_des_state; exit 0' INT QUIT TERM EXIT
+
+mobot_drifty_odom &
+pid_mobot_drifty_odom=$!
+
+mobot_pub_des_state &
+pid_mobot_pub_des_state=$!
