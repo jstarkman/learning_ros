@@ -1,43 +1,36 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
+
 project(baxter_fk_ik)
 
-find_package(catkin_simple REQUIRED)
+find_package(ament_cmake REQUIRED)
 
-#uncomment next line to use OpenCV library
-#find_package(OpenCV REQUIRED)
+# https://stackoverflow.com/a/12258855
+set(EIGEN3_INCLUDE_DIR "/usr/include/eigen3/")
+include_directories("${EIGEN3_INCLUDE_DIR}")
 
-#uncomment the next 2 lines to use the point-cloud library
-#find_package(PCL 1.7 REQUIRED)
-#include_directories(${PCL_INCLUDE_DIRS})
+include_directories(include)
+ament_export_include_directories(include)
 
+add_library(${PROJECT_NAME} SHARED src/${PROJECT_NAME}.cpp)
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE "XFORM_UTILS_BUILDING_LIBRARY")
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+ament_export_libraries(${PROJECT_NAME})
 
-#uncomment the following 4 lines to use the Eigen library
-find_package(cmake_modules REQUIRED)
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-add_definitions(${EIGEN_DEFINITIONS})
+set(target baxter_reachability_from_above)
 
-catkin_simple()
+add_executable(${target} src/${target}.cpp)
+target_link_libraries(${target} ${PROJECT_NAME})
+ament_target_dependencies(${target} ${PROJECT_NAME})
+install(TARGETS ${target} DESTINATION bin)
 
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
+ament_package()
 
-# C++0x support - not quite the same as final C++11!
-# use carefully;  can interfere with point-cloud library
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
-# Libraries: uncomment the following and edit arguments to create a new library
-cs_add_library(baxter_fk_ik src/baxter_fk_ik.cpp)   
-
-# Executables: uncomment the following and edit arguments to compile new nodes
-# may add more of these lines for more nodes from the same package
-cs_add_executable(baxter_reachability_from_above src/baxter_reachability_from_above.cpp)
-
-#the following is required, if desire to link a node in this package with a library created in this same package
-# edit the arguments to reference the named node and named library within this package
-# target_link_libraries(example my_lib)
-target_link_libraries(baxter_reachability_from_above baxter_fk_ik ${catkin_LIBRARIES})
-
-cs_install()
-cs_export()
-    
+install(DIRECTORY include/
+  DESTINATION include
+)
