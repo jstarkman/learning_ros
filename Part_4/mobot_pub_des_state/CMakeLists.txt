@@ -7,12 +7,11 @@ find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
 
 find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-
 find_package(traj_builder REQUIRED)
 
-find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 if(NOT WIN32)
@@ -21,7 +20,7 @@ endif()
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/Path.srv"
-  DEPENDENCIES builtin_interfaces nav_msgs
+  DEPENDENCIES nav_msgs
 )
 
 # https://stackoverflow.com/a/12258855
@@ -31,7 +30,7 @@ include_directories("${EIGEN3_INCLUDE_DIR}")
 macro(custom_executable target)
   add_executable(${target} src/${target}.cpp)
   ament_target_dependencies(${target}
-    "rclcpp" "std_msgs" "nav_msgs" "geometry_msgs" "traj_builder")
+    "rclcpp" "std_msgs" "std_srvs" "nav_msgs" "geometry_msgs" "traj_builder")
   rosidl_target_interfaces(${target}
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
   install(TARGETS ${target}
@@ -47,7 +46,3 @@ custom_executable(pub_des_state_path_client_3mx3m_sqr)
 custom_executable(starting_pen_pub_des_state_path_client)
 
 ament_package()
-
-install(DIRECTORY include/
-  DESTINATION include
-)
