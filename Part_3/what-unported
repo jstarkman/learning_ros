@@ -1,0 +1,12 @@
+The following packages have not been ported due to dependencies on packages
+presently unavailable in ROS2, including actionlib, gazebo_msgs, nav_core,
+old-style launchers, &c.
+
+example_camera_calibration
+example_opencv
+lidar_wobbler
+object_finder
+opencv_and_pcl
+pcd_images
+pcl_utils
+simple_camera_model
