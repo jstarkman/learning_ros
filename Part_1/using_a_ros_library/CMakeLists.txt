@@ -12,7 +12,6 @@ find_package(creating_a_ros_library REQUIRED)
 
 function(add_link_install_exe target files)
   add_executable(${target} ${files})
-#   target_link_libraries(${target} creating_a_ros_library)
   ament_target_dependencies(${target}
     "rclcpp" "creating_a_ros_library")
   install(TARGETS ${target} DESTINATION bin)

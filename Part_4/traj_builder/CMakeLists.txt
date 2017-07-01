@@ -28,7 +28,7 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
-
+ament_export_libraries(${PROJECT_NAME})
 
 set(target traj_builder_example_main)
 

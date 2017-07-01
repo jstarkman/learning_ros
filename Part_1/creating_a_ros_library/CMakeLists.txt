@@ -25,6 +25,7 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
+ament_export_libraries(${PROJECT_NAME})
 
 function(add_link_install_exe target link_to_whom files)
   add_executable(${target} ${files})
