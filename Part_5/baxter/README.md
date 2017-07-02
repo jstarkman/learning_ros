@@ -14,4 +14,7 @@ include_directories(include /path/to/your/ros_ws/devel/include/)
 
 The following packages are unported:
 
-baxter_jnt_traj_ctlr_client
+* baxter_jnt_traj_ctlr_client (actionlib)
+* baxter_launch_files (no code)
+* baxter_playfile_nodes (actionlib)
+* baxter_trajectory_streamer (actionlib)
