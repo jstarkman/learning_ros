@@ -1,7 +1,8 @@
 # example_controllers
-Simple 1-DOF robot with a prismatic joint is in model "prismatic_1dof_robot_description_w_jnt_ctl.xacro".
+
+Simple 1-DOF robot with a prismatic joint is in model `prismatic_1dof_robot_description_w_jnt_ctl.xacro`.
 Illustrates 3 types of controller: joint position control (plug-in), which uses control parameters in
-subdirectory "control_config", file "one_dof_pos_ctl_params.yaml".  The position-controlled robot is launched with:
+subdirectory `control_config`, file `one_dof_pos_ctl_params.yaml`.  The position-controlled robot is launched with:
 `roslaunch example_controllers prismatic_1dof_robot_w_jnt_pos_ctl.launch` 
 
 Joint velocity control illustration uses the same URDF, but is launched with:
@@ -10,8 +11,10 @@ Joint velocity control illustration uses the same URDF, but is launched with:
 Force control is also illustrated, using velocity control as an inner loop.  This controller
 requires a model of a force sensor, which is included in the robot URDF.
 
+```
 rosrun rqt_gui rqt_gui
 rosrun example_controllers sine
+```
 
   created example_force_control/prismatic_1dof_robot_description_w_jnt_ctl.urdf
   has effortJointInterface
@@ -21,18 +24,22 @@ launch file: example_force_control/prismatic_1dof_robot_w_jnt_ctl.launch
   which sets pure velocity-control proportional gain
   
 can test the velocity-control interface as follows:
-`roslaunch gazebo_ros empty_world.launch` 
-`roslaunch example_force_control prismatic_1dof_robot_w_jnt_ctl.launch` 
-`rosrun example_force_control sine_vel_commander` 
+```
+roslaunch gazebo_ros empty_world.launch
+roslaunch example_force_control prismatic_1dof_robot_w_jnt_ctl.launch
+rosrun example_force_control sine_vel_commander
+```
 
-To test an NAC controller, instead of sine_vel_commander, run:
+To test an NAC controller, instead of `sine_vel_commander`, run:
 `rosrun example_force_control nac_controller`
+
 Then robot behaves like a spring/damper piston.  
 
 Can, e.g., import a model and "drop" it on the robot (virtual piston) to observe transient response of NAC.
 
 Drop a cylindrical weight by running:
 `roslaunch example_force_control add_weight.launch`
+
 (may need to adjust gravity, f_sat, K_virt, ...)
 
 
@@ -41,8 +48,6 @@ Drop a cylindrical weight by running:
   test tuning w/ 
   `rosrun rqt_reconfigure rqt_reconfigure`
   
+# ROS2
 
-## Example usage
-
-## Running tests/demos
-    
+As a reminder, one can use the `ros1_bridge` package to communicate with Gazebo.

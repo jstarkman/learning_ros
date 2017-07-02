@@ -1,42 +1,29 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
+
 project(example_controllers)
 
-find_package(catkin_simple REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(arm7dof_fk_ik REQUIRED)
 
-#uncomment next line to use OpenCV library
-#find_package(OpenCV REQUIRED)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-#uncomment the next 2 lines to use the point-cloud library
-#find_package(PCL 1.7 REQUIRED)
-#include_directories(${PCL_INCLUDE_DIRS})
+# https://stackoverflow.com/a/12258855
+set(EIGEN3_INCLUDE_DIR "/usr/include/eigen3/")
+include_directories("${EIGEN3_INCLUDE_DIR}")
 
+function(custom_executable target)
+  add_executable(${target} src/${target}.cpp)
+  ament_target_dependencies(${target} "rclcpp" "std_msgs" "sensor_msgs" "geometry_msgs" "arm7dof_fk_ik" ${PROJECT_NAME})
+  install(TARGETS ${target} DESTINATION bin)
+endfunction()
 
-#uncomment the following 4 lines to use the Eigen library
-#find_package(cmake_modules REQUIRED)
-#find_package(Eigen3 REQUIRED)
-#include_directories(${EIGEN3_INCLUDE_DIR})
-#add_definitions(${EIGEN_DEFINITIONS})
+custom_executable(one_dof_sine_commander)
+custom_executable(nac_controller)
 
-catkin_simple()
-
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
-
-# C++0x support - not quite the same as final C++11!
-# use carefully;  can interfere with point-cloud library
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
-# Libraries: uncomment the following and edit arguments to create a new library
-# cs_add_library(my_lib src/my_lib.cpp)   
-
-# Executables: uncomment the following and edit arguments to compile new nodes
-# may add more of these lines for more nodes from the same package
-cs_add_executable(one_dof_sine_commander src/sine_commander.cpp)
-cs_add_executable(nac_controller src/nac_controller.cpp)
-#the following is required, if desire to link a node in this package with a library created in this same package
-# edit the arguments to reference the named node and named library within this package
-# target_link_libraries(example my_lib)
-
-cs_install()
-cs_export()
-    
+ament_package()
