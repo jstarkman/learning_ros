@@ -1,42 +1,33 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
+
 project(joint_space_planner)
 
-find_package(catkin_simple REQUIRED)
+find_package(ament_cmake REQUIRED)
 
-#uncomment next line to use OpenCV library
-#find_package(OpenCV REQUIRED)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-#uncomment the next 2 lines to use the point-cloud library
-#find_package(PCL 1.7 REQUIRED)
-#include_directories(${PCL_INCLUDE_DIRS})
+# https://stackoverflow.com/a/12258855
+set(EIGEN3_INCLUDE_DIR "/usr/include/eigen3/")
+include_directories("${EIGEN3_INCLUDE_DIR}")
 
+include_directories(include)
+ament_export_include_directories(include)
 
-#uncomment the following 4 lines to use the Eigen library
-find_package(cmake_modules REQUIRED)
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-add_definitions(${EIGEN_DEFINITIONS})
+add_library(${PROJECT_NAME} SHARED src/${PROJECT_NAME}.cpp)
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE ${PROJECT_NAME}"_BUILDING_LIBRARY")
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+ament_export_libraries(${PROJECT_NAME})
 
-catkin_simple()
+ament_package()
 
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
-
-# C++0x support - not quite the same as final C++11!
-# use carefully;  can interfere with point-cloud library
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
-# Libraries: uncomment the following and edit arguments to create a new library
-cs_add_library(joint_space_planner src/joint_space_planner.cpp)   
-
-# Executables: uncomment the following and edit arguments to compile new nodes
-# may add more of these lines for more nodes from the same package
-# cs_add_executable(example src/example.cpp)
-
-#the following is required, if desire to link a node in this package with a library created in this same package
-# edit the arguments to reference the named node and named library within this package
-# target_link_libraries(example my_lib)
-
-cs_install()
-cs_export()
-    
+install(DIRECTORY include/
+  DESTINATION include
+)
