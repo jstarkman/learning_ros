@@ -1,0 +1,13 @@
+The following packages have not been ported due to dependencies on packages
+presently unavailable in ROS2, including actionlib, gazebo_msgs, nav_core,
+old-style launchers, &c.
+
+cartesian_planner (actionlib)
+cwru_ariac/* (Gazebo and actionlib)
+example_trajectory (actionlib)
+irb120 (portable, but highly dependent on ROS1-only packages; no real point in porting)
+object_grabber (actionlib)
+rrbot (portable, but highly dependent on ROS1-only packages; no real point in porting)
+ur10_robot (everything except fk/ik needs actionlib)
+
+pt5_models (not a real package)

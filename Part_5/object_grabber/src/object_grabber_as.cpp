@@ -1,20 +1,19 @@
-// object_grabber_as3: 
-// wsn, November, 2016
-// ObjectGrabber action server w/ ObjectGrabber class
 
-#include<ros/ros.h>
+
 #include <object_grabber/object_grabber.h>
+#include <ros/ros.h>
 
-int main(int argc, char** argv) {
-    ros::init(argc, argv, "object_grabber_action_server_node"); // name this node 
-    ros::NodeHandle nh; //standard ros node handle   
-    ObjectGrabber object_grabber_as(&nh); // create an instance of the class "ObjectGrabber", containing an action server
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "object_grabber_action_server_node");
+  ros::NodeHandle nh;
+  ObjectGrabber object_grabber_as(&nh);
 
-    ROS_INFO("going into spin");
-    while (ros::ok()) {
-        ros::spinOnce(); //normally, can simply do: ros::spin();  
-        ros::Duration(0.1).sleep(); //spinOnce() in a loop w/o timer will crash
-    }
-    return 0;
+  ROS_INFO("going into spin");
+  while (ros::ok())
+  {
+    ros::spinOnce();
+    ros::Duration(0.1).sleep();
+  }
+  return 0;
 }
-

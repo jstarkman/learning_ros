@@ -1,3 +1,5 @@
+# CWRU Ariac
+
 Bring up UR10 robot, on pedestal, with sticky-fingers vacuum gripper emulation:
 `roslaunch ur10_launch ur10_w_gripper.launch`
 
