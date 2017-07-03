@@ -22,8 +22,8 @@ int32 DEPART_Z_TOOL = 12   # depart from object along neg tool-z axis
 int32 APPROACH_LATERAL_SLIDE = 21 #approach grasp pose by sliding along axis btwn fingertips
 int32 DEPART_LATERAL_SLIDE = 22  #depart grasp pose by sliding along axis btwn fingertips
 
-int32 object_ID
-int32 gripper_ID
+int32 object_id
+int32 gripper_id
 uint8 query_code
 int32 grasp_option
 

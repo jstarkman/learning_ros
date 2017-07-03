@@ -1,83 +1,78 @@
-//organize this service such that the first (0'th) option for
-//approach, grasp and depart correspond to the preferred default options
-
-#include <ros/ros.h>
-#include <Eigen/Eigen>
 #include <Eigen/Dense>
+#include <Eigen/Eigen>
 #include <Eigen/Geometry>
-#include <xform_utils/xform_utils.h> //these could be handy in the future
-#include <geometry_msgs/PoseStamped.h>
-#include <object_manipulation_properties/gripper_ID_codes.h>
-#include <object_manipulation_properties/object_ID_codes.h>
-#include <object_manipulation_properties/objectManipulationQuery.h>
-//functions dedicated to individual gripper types, with specific
-// cases for part codes; tedious!
-#include "rethink_gripper_rt_manip_fncs.cpp" 
-#include "sticky_fingers_manip_fncs.cpp" //sticky_fingers_grasp_query(object_id,query_code,grasp_option,response);
-#include "yale_gripper_model_t_manip_fncs.cpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "object_manipulation_properties/gripper_id_codes.hpp"
+#include "object_manipulation_properties/object_id_codes.hpp"
+#include "object_manipulation_msgs/srv/query.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "xform_utils/xform_utils.hpp"
+
 #include "ariac_vacuum_gripper_manip_fncs.cpp"
+#include "rethink_gripper_rt_manip_fncs.cpp"
+#include "sticky_fingers_manip_fncs.cpp"
+#include "yale_gripper_model_t_manip_fncs.cpp"
+
 using namespace std;
 
-//to add a gripper type, add a gripper code in gripper_ID_codes.h, and
-// add a case for the new gripper_id below,
-// then write fnc call for this new gripper in file xxx_gripper_manip_fncs.cpp
-// include the cpp file for the gripper_manip_fncs
+XformUtils xformUtils;
 
-bool callback(object_manipulation_properties::objectManipulationQueryRequest& request,
-        object_manipulation_properties::objectManipulationQueryResponse& response) {
-    int query_code = request.query_code;
-    //special case to test if service is alive; merely replies "valid_reply=true", but no data
-    if (query_code == object_manipulation_properties::objectManipulationQueryRequest::TEST_PING) {
-        ROS_INFO("object manipulation query service received a test ping");
-        response.valid_reply = true;
-        return true;
-    }
-    //more interesting cases:
-    int object_id = request.object_ID;
-    int gripper_id = request.gripper_ID;
+void callback(const std::shared_ptr<rmw_request_id_t> request_header,
+              const std::shared_ptr<object_manipulation_msgs::srv::Query::Request> request,
+              std::shared_ptr<object_manipulation_msgs::srv::Query::Response> response)
+{
+  int query_code = request->query_code;
 
-    int grasp_option = request.grasp_option; //does this crash?
-    ROS_INFO("grasp_option = %d ", grasp_option);
-    //only examine grasp_option if it is relevant (and presumably filled in)
-    if (query_code >= object_manipulation_properties::objectManipulationQueryRequest::GET_GRASP_POSE_TRANSFORMS) {
-        grasp_option = request.grasp_option;
-    }
-    //have to invoke this svc 3x to get approach pose, grasp pose and depart pose
-    switch (gripper_id) { //exhaustive cases for gripper options:
-        case GripperIdCodes::RETHINK_ELECTRIC_GRIPPER_RT:
-            ROS_INFO("rethink gripper query: object_id, query_code, grasp_option: %d, %d, %d",
-                    object_id,query_code,grasp_option);
-            rethink_grasp_query(object_id, query_code, grasp_option, response);
-            break;
-        case GripperIdCodes::STICKY_FINGERS:
-            sticky_fingers_grasp_query(object_id, query_code, grasp_option, response);
-            break;
-        case GripperIdCodes::YALE_GRIPPER_MODEL_T:
-            yale_gripper_model_t_grasp_query(object_id, query_code, grasp_option, response);
-            break;
-        case GripperIdCodes::ARIAC_VACUUM_GRIPPER:
-            ariac_vacuum_gripper_grasp_query(object_id, query_code, grasp_option, response);
-            break;
-            //add more gripper cases here...
-        default:
-            ROS_WARN("gripper ID not recognized");
-            response.valid_reply = false; //just give up
-            break;
-    }
+  if (query_code == object_manipulation_msgs::srv::Query::Request::TEST_PING)
+  {
+    ROS_INFO("object manipulation query service received a test ping");
+    response->valid_reply = true;
+    return;
+  }
 
+  int object_id = request->object_id;
+  int gripper_id = request->gripper_id;
 
-    return true;
+  int grasp_option = request->grasp_option;
+  ROS_INFO("grasp_option = %d ", grasp_option);
+
+  if (query_code >= object_manipulation_msgs::srv::Query::Request::GET_GRASP_POSE_TRANSFORMS)
+  {
+    grasp_option = request->grasp_option;
+  }
+
+  switch (gripper_id)
+  {
+    case GripperIdCodes::RETHINK_ELECTRIC_GRIPPER_RT:
+      ROS_INFO("rethink gripper query: object_id, query_code, grasp_option: %d, %d, %d", object_id, query_code,
+               grasp_option);
+      rethink_grasp_query(object_id, query_code, grasp_option, response);
+      break;
+    case GripperIdCodes::STICKY_FINGERS:
+      sticky_fingers_grasp_query(object_id, query_code, grasp_option, response);
+      break;
+    case GripperIdCodes::YALE_GRIPPER_MODEL_T:
+      yale_gripper_model_t_grasp_query(object_id, query_code, grasp_option, response);
+      break;
+    case GripperIdCodes::ARIAC_VACUUM_GRIPPER:
+      ariac_vacuum_gripper_grasp_query(object_id, query_code, grasp_option, response);
+      break;
+
+    default:
+      ROS_WARN("gripper ID not recognized");
+      response->valid_reply = false;
+      break;
+  }
 }
 
-int main(int argc, char **argv) {
-    ros::init(argc, argv, "object_manip_query_svc");
-    ros::NodeHandle n;
-    XformUtils xformUtils;
+int main(int argc, char** argv)
+{
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::node::Node::make_shared("object_manip_query_svc");
+  auto server = node->create_service<object_manipulation_msgs::srv::Query>(
+      "object_manip_query_svc", callback);
 
-    ros::ServiceServer service = n.advertiseService("object_manip_query_svc", callback);
-    ROS_INFO("object manipulation query service ready");
-    ros::spin();
+  rclcpp::spin(node);
 
-    return 0;
+  return 0;
 }
-

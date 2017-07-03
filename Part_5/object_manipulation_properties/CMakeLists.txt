@@ -1,43 +1,51 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(object_manipulation_properties)
 
-find_package(catkin_simple REQUIRED)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+endif()
 
-#uncomment next line to use OpenCV library
-#find_package(OpenCV REQUIRED)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(xform_utils REQUIRED)
+find_package(object_manipulation_msgs REQUIRED)
 
-#uncomment the next 2 lines to use the point-cloud library
-#find_package(PCL 1.7 REQUIRED)
-#include_directories(${PCL_INCLUDE_DIRS})
+# https://stackoverflow.com/a/12258855
+set(EIGEN3_INCLUDE_DIR "/usr/include/eigen3/")
+include_directories("${EIGEN3_INCLUDE_DIR}")
 
+include_directories(include)
+ament_export_include_directories(include)
 
-#uncomment the following 4 lines to use the Eigen library
-find_package(cmake_modules REQUIRED)
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-add_definitions(${EIGEN_DEFINITIONS})
+add_library(${PROJECT_NAME} SHARED src/${PROJECT_NAME}.cpp)
+ament_target_dependencies(${PROJECT_NAME}
+  rclcpp std_msgs geometry_msgs xform_utils object_manipulation_msgs)
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE ${PROJECT_NAME}"_BUILDING_LIBRARY")
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+ament_export_libraries(${PROJECT_NAME})
 
-catkin_simple()
+macro(add_install_exe target)
+  add_executable(${target} src/${target}.cpp)
+  target_link_libraries(${target} ${PROJECT_NAME})
+  ament_target_dependencies(${target}
+    "rclcpp" "std_msgs" "geometry_msgs" "xform_utils" "object_manipulation_msgs")
+  install(TARGETS ${target} DESTINATION bin)
+endmacro()
 
-# example boost usage
-# find_package(Boost REQUIRED COMPONENTS system thread)
+add_install_exe(object_manipulation_query_svc)
+add_install_exe(example_object_manip_query_client)
+add_install_exe(object_manipulation_properties_test_main)
 
-# C++0x support - not quite the same as final C++11!
-# use carefully;  can interfere with point-cloud library
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+ament_package()
 
-# Libraries: uncomment the following and edit arguments to create a new library
-#cs_add_library(object_manipulation_properties src/object_manipulation_properties.cpp)   
-
-# Executables: uncomment the following and edit arguments to compile new nodes
-# may add more of these lines for more nodes from the same package
-#cs_add_executable(object_manipulation_properties_test_main src/object_manipulation_properties_test_main.cpp)
-cs_add_executable(object_manipulation_query_svc src/object_manipulation_query_svc.cpp)
-cs_add_executable(example_object_manip_query_client src/example_object_manip_query_client.cpp)
-#the following is required, if desire to link a node in this package with a library created in this same package
-# edit the arguments to reference the named node and named library within this package
-#target_link_libraries(object_manipulation_properties_test_main object_manipulation_properties)
-
-cs_install()
-cs_export()
-    
+install(DIRECTORY include/
+  DESTINATION include
+)
