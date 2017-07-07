@@ -30,7 +30,7 @@ add_executable(${target} src/${target}.cpp)
 ament_target_dependencies(${target}
   "rcl" "rclcpp" "console_bridge" "tf2" "tf2_ros" "nav_msgs" "geometry_msgs")
 install(TARGETS ${target}
-DESTINATION bin)
+DESTINATION lib/${PROJECT_NAME})
 
 # custom_executable(example_tf_listener)
 

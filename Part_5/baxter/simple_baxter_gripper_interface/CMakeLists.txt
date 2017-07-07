@@ -29,7 +29,7 @@ install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 ament_export_libraries(${PROJECT_NAME})
 
@@ -38,7 +38,7 @@ function(custom_executable target)
   target_link_libraries(${target} ${PROJECT_NAME})
   ament_target_dependencies(${target}
     "rclcpp" "rcutils" "baxter_core_msgs" ${PROJECT_NAME})
-  install(TARGETS ${target} DESTINATION bin)  
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})  
 endfunction()
 
 custom_executable(test_baxter_gripper)

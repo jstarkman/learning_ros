@@ -23,7 +23,7 @@ function(add_link_install_exe target files)
   add_executable(${target} ${files})
   ament_target_dependencies(${target}
     "rclcpp" "creating_a_ros_library" "std_msgs" "std_srvs")
-  install(TARGETS ${target} DESTINATION bin)
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 add_link_install_exe(example_ros_class_test_main

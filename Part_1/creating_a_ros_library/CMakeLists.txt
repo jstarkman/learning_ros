@@ -30,7 +30,7 @@ install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 ament_export_libraries(${PROJECT_NAME})
 
@@ -39,7 +39,7 @@ function(add_link_install_exe target link_to_whom files)
   target_link_libraries(${target} ${link_to_whom})
   ament_target_dependencies(${target}
     "rclcpp" "rcutils" "std_msgs" "std_srvs" ${link_to_whom})
-  install(TARGETS ${target} DESTINATION bin)
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 add_link_install_exe(ros_library_test_main ${PROJECT_NAME}

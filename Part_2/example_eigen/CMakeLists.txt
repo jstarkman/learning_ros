@@ -28,6 +28,6 @@ set(target example_eigen_plane_fit)
 
 add_executable(${target} src/${target}.cpp)
 ament_target_dependencies(${target} "rclcpp" "rcutils")
-install(TARGETS ${target} DESTINATION bin)
+install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

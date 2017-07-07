@@ -29,7 +29,7 @@ include_directories("${EIGEN3_INCLUDE_DIR}")
 function(custom_executable target)
   add_executable(${target} src/${target}.cpp)
   ament_target_dependencies(${target} "rclcpp" "std_msgs" "sensor_msgs" "geometry_msgs" "arm7dof_fk_ik" ${PROJECT_NAME})
-  install(TARGETS ${target} DESTINATION bin)
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 custom_executable(one_dof_sine_commander)

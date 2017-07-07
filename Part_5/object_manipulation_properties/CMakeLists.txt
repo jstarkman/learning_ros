@@ -39,7 +39,7 @@ install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 ament_export_libraries(${PROJECT_NAME})
 
@@ -48,7 +48,7 @@ macro(add_install_exe target)
   target_link_libraries(${target} ${PROJECT_NAME})
   ament_target_dependencies(${target}
     "rclcpp" "rcutils" "std_msgs" "geometry_msgs" "xform_utils" "object_manipulation_msgs")
-  install(TARGETS ${target} DESTINATION bin)
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endmacro()
 
 add_install_exe(object_manipulation_query_svc)

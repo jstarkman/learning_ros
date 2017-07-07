@@ -33,6 +33,6 @@ set(target localization_w_gps)
 
 add_executable(${target} src/${target}.cpp)
 ament_target_dependencies(${target} "rclcpp" "rcutils" "std_msgs" "nav_msgs" "geometry_msgs" "xform_utils" "sensor_msgs")
-install(TARGETS ${target} DESTINATION bin)
+install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

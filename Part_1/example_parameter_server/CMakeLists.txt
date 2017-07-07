@@ -20,7 +20,7 @@ function(custom_executable target)
   ament_target_dependencies(${target}
     "rclcpp")
   install(TARGETS ${target}
-    DESTINATION bin)
+    DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 custom_executable(read_param_from_node src/read_param_from_node.cpp)

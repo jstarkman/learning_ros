@@ -33,7 +33,7 @@ function(add_install_exe target files)
     "rclcpp" "rcutils" "std_msgs" "nav_msgs" "geometry_msgs")
   rosidl_target_interfaces(${target}
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
-  install(TARGETS ${target} DESTINATION bin)
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 add_install_exe(example_ros_service_exe src/example_ros_service.cpp)

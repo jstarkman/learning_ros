@@ -30,7 +30,7 @@ function(add_link_install_exe target files)
     "rclcpp" "rcutils" "std_msgs" "custom_msgs")
   rosidl_target_interfaces(${target}
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
-  install(TARGETS ${target} DESTINATION bin)
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 add_link_install_exe(example_ros_message_publisher src/example_ros_message_publisher.cpp)

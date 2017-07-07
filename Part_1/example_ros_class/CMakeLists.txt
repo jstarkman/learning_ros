@@ -23,7 +23,7 @@ function(add_install_exe target files)
   add_executable(${target} ${files})
   ament_target_dependencies(${target}
     "rclcpp" "rcutils" "std_msgs" "std_srvs")
-  install(TARGETS ${target} DESTINATION bin)
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 

@@ -39,7 +39,7 @@ install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 ament_export_libraries(${PROJECT_NAME})
 
@@ -48,7 +48,7 @@ set(target example_xform_utils)
 add_executable(${target} src/${target}.cpp)
 target_link_libraries(${target} ${PROJECT_NAME})
 ament_target_dependencies(${target} "rclcpp" "std_msgs" "nav_msgs" "geometry_msgs" "tf2" ${PROJECT_NAME})
-install(TARGETS ${target} DESTINATION bin)
+install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
 

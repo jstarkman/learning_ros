@@ -24,6 +24,6 @@ set(target mobot_nl_steering)
 
 add_executable(${target} src/${target}.cpp)
 ament_target_dependencies(${target} "rclcpp" "rcutils" "std_msgs" "nav_msgs" "geometry_msgs")
-install(TARGETS ${target} DESTINATION bin)
+install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

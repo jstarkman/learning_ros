@@ -33,7 +33,7 @@ install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 ament_export_libraries(${PROJECT_NAME})
 
@@ -42,7 +42,7 @@ set(target traj_builder_example_main)
 add_executable(${target} src/${target}.cpp)
 target_link_libraries(${target} ${PROJECT_NAME})
 ament_target_dependencies(${target} "rclcpp" "rcutils" "std_msgs" "nav_msgs" "geometry_msgs" ${PROJECT_NAME})
-install(TARGETS ${target} DESTINATION bin)
+install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
 

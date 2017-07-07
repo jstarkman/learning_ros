@@ -27,6 +27,6 @@ add_executable(${target} src/${target}.cpp)
 ament_target_dependencies(${target}
   "rcl" "rclcpp" "sensor_msgs" "nav_msgs" "geometry_msgs")
 install(TARGETS ${target}
-DESTINATION bin)
+DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

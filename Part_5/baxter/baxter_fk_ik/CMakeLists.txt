@@ -21,7 +21,7 @@ install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 ament_export_libraries(${PROJECT_NAME})
 
@@ -30,7 +30,7 @@ set(target baxter_reachability_from_above)
 add_executable(${target} src/${target}.cpp)
 target_link_libraries(${target} ${PROJECT_NAME})
 ament_target_dependencies(${target} ${PROJECT_NAME})
-install(TARGETS ${target} DESTINATION bin)
+install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
 

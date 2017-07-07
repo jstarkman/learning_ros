@@ -23,7 +23,7 @@ function(custom_executable target)
   ament_target_dependencies(${target}
     "rclcpp" "std_msgs" "sensor_msgs")
   install(TARGETS ${target}
-    DESTINATION bin)
+    DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 custom_executable(lidar_alarm)

@@ -32,7 +32,7 @@ function(custom_executable target)
   rosidl_target_interfaces(${target}
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
   install(TARGETS ${target}
-    DESTINATION bin)
+    DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 custom_executable(rethink_rt_gripper_service)

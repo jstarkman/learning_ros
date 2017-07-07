@@ -44,7 +44,7 @@ macro(custom_executable target)
   rosidl_target_interfaces(${target}
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
   install(TARGETS ${target}
-    DESTINATION bin)
+    DESTINATION lib/${PROJECT_NAME})
 endmacro()
 
 custom_executable(pub_des_state_main)

@@ -26,7 +26,7 @@ function(custom_executable target)
     "rclcpp"
     "std_msgs")
   install(TARGETS ${target}
-    DESTINATION bin)
+    DESTINATION lib/${PROJECT_NAME})
 endfunction()
 ## how to extend the above function for special cases
 # custom_executable(imu_listener)

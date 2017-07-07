@@ -44,7 +44,7 @@ set(target odom_tf_demo)
 add_executable(${target} src/odom_tf_main.cpp)
 target_link_libraries(${target} ${PROJECT_NAME})
 ament_target_dependencies(${target} "rclcpp" "rcutils" "std_msgs" "nav_msgs" "geometry_msgs" "tf2" "tf2_ros" "tf2_msgs" "xform_utils" ${PROJECT_NAME})
-install(TARGETS ${target} DESTINATION bin)
+install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
 
