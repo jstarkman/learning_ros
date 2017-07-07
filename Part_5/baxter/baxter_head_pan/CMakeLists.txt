@@ -8,9 +8,15 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(baxter_core_msgs REQUIRED)
 
-if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra -Wpedantic")
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
 endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 
 function(custom_executable target)
   add_executable(${target} src/${target}.cpp)
