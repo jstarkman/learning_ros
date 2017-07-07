@@ -1,19 +1,48 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
+
 project(example_rviz_marker)
 
-find_package(catkin_simple REQUIRED)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
-catkin_simple()
-#uncomment the following 4 lines to use the Eigen library
-find_package(cmake_modules REQUIRED)
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-add_definitions(${EIGEN_DEFINITIONS})
+# taken from example_interfaces:
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  # we dont use add_compile_options with pedantic in message packages
+  # because the Python C extensions dont comply with it
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
+endif()
 
-# Executables
-cs_add_executable(example_rviz_marker src/example_rviz_marker.cpp)
-cs_add_executable(triad_display src/triad_display.cpp)
-cs_add_executable(triad_display_test_node src/triad_display_test_node.cpp)
-cs_install()
-cs_export()
 
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+find_package(visualization_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/SimpleFloatSrvMsg.srv"
+)
+
+# https://stackoverflow.com/a/12258855
+set(EIGEN3_INCLUDE_DIR "/usr/include/eigen3/")
+include_directories("${EIGEN3_INCLUDE_DIR}")
+
+
+function(add_install_exe target)
+  add_executable(${target} src/${target}.cpp)
+  ament_target_dependencies(${target}
+    "rclcpp" "rcutils" "std_msgs" "builtin_interfaces" "visualization_msgs" "geometry_msgs")
+  rosidl_target_interfaces(${target}
+    ${PROJECT_NAME} "rosidl_typesupport_cpp")
+  install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
+endfunction()
+
+add_install_exe(example_rviz_marker_srv)
+add_install_exe(triad_display)
+add_install_exe(triad_display_test_node)
+
+ament_package()
