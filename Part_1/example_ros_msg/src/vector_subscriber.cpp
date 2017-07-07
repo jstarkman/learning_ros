@@ -1,7 +1,8 @@
 #include "custom_msgs/msg/vec_of_doubles.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 
 #include <vector>
 

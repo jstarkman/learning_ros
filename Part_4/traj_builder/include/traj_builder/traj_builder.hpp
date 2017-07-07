@@ -16,7 +16,8 @@
 #include <string>
 #include <vector>
 
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 
 const double default_accel_max = 0.5;       // 1m/sec^2
 const double default_alpha_max = 0.2;       // 1 rad/sec^2

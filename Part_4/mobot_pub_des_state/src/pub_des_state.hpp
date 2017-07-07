@@ -10,8 +10,9 @@
 #include "std_srvs/srv/trigger.hpp"
 #include "traj_builder/traj_builder.hpp"  //has almost all the headers we need
 
-#define ROS_INFO printf
-#define ROS_WARN printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
+#define ROS_WARN RCUTILS_LOG_WARN
 
 // https://stackoverflow.com/a/15764679
 template <typename T>

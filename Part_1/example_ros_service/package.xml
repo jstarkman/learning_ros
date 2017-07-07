@@ -22,6 +22,7 @@
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
 
+  <depend>rcutils</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

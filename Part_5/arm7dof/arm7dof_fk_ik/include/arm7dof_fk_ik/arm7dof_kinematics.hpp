@@ -20,6 +20,10 @@
 #include <string>
 #include <vector>
 
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
+#define ROS_WARN RCUTILS_LOG_WARN
+
 typedef Eigen::Matrix<double, 6, 1> Vectorq6x1;
 typedef Eigen::Matrix<double, 7, 1> Vectorq7x1;
 

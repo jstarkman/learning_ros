@@ -13,7 +13,8 @@
 #include "std_msgs/msg/float64.hpp"
 #include "xform_utils/xform_utils.hpp"
 
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 
 const double MAIN_DT = 0.01;
 const double K_YAW = 0.1;

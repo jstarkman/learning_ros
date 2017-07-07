@@ -5,6 +5,7 @@ project(example_eigen) ### JAS change me!
 ### JAS change me as needed!
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 
 # https://stackoverflow.com/a/12258855
 set(EIGEN3_INCLUDE_DIR "$ENV{EIGEN3_INCLUDE_DIR}")
@@ -20,7 +21,7 @@ endif()
 set(target example_eigen_plane_fit)
 
 add_executable(${target} src/${target}.cpp)
-ament_target_dependencies(${target} "rclcpp")
+ament_target_dependencies(${target} "rclcpp" "rcutils")
 install(TARGETS ${target} DESTINATION bin)
 
 ament_package()

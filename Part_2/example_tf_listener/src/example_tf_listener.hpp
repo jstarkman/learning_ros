@@ -17,8 +17,9 @@
 #include "tf2_ros/buffer_interface.h"
 #include "tf2_ros/transform_listener.h"
 
-#define ROS_INFO printf
-#define ROS_WARN printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
+#define ROS_WARN RCUTILS_LOG_WARN
 
 class DemoTfListener
 {

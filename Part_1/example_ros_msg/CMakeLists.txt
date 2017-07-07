@@ -9,6 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(custom_msgs REQUIRED)
 
@@ -20,7 +21,7 @@ rosidl_generate_interfaces(example_ros_msg
 function(add_link_install_exe target files)
   add_executable(${target} ${files})
   ament_target_dependencies(${target}
-    "rclcpp" "std_msgs" "custom_msgs")
+    "rclcpp" "rcutils" "std_msgs" "custom_msgs")
   rosidl_target_interfaces(${target}
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
   install(TARGETS ${target} DESTINATION bin)

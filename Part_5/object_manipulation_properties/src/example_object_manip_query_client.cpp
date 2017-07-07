@@ -4,8 +4,9 @@
 #include "rclcpp/rclcpp.hpp"
 #include "xform_utils/xform_utils.hpp"
 
-#define ROS_INFO printf
-#define ROS_WARN printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
+#define ROS_WARN RCUTILS_LOG_WARN
 
 object_manipulation_msgs::srv::Query_Response::SharedPtr send_blocking_request(
     rclcpp::node::Node::SharedPtr node,

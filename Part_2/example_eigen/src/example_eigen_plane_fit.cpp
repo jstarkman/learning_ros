@@ -11,7 +11,8 @@
 
 double g_noise_gain = 0.1;
 
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 #define ROS_INFO_STREAM(...) std::cout << __VA_ARGS__ << std::endl
 
 int main()

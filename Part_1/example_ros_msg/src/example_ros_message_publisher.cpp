@@ -3,7 +3,8 @@
 #include "example_ros_msg/msg/example_message.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 
 /* Ripped from ~/ros2_ws/src/ros2/demos/intra_process_demo/src/image_pipeline/common.hpp */
 void set_now(builtin_interfaces::msg::Time& time)

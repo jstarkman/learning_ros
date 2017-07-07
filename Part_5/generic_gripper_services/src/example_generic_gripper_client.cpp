@@ -1,8 +1,9 @@
 #include "generic_gripper_services/srv/generic_gripper_interface.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-#define ROS_INFO printf
-#define ROS_WARN printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
+#define ROS_WARN RCUTILS_LOG_WARN
 
 generic_gripper_services::srv::GenericGripperInterface_Response::SharedPtr
 send_blocking_request(rclcpp::node::Node::SharedPtr node,

@@ -1,7 +1,5 @@
 #include "arm7dof_fk_ik/arm7dof_kinematics.hpp"
 
-#define ROS_WARN printf
-
 using namespace std;
 
 Eigen::Matrix4d compute_A_of_DH(int i, double q_ang)

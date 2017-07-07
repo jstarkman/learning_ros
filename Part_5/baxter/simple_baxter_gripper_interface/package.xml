@@ -10,6 +10,7 @@
   <depend>rclcpp</depend>
   <depend>rmw_implementation</depend>
   <depend>baxter_core_msgs</depend>
+  <depend>rcutils</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

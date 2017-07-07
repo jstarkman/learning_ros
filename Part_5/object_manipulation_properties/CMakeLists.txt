@@ -7,6 +7,8 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(xform_utils REQUIRED)
@@ -39,7 +41,7 @@ macro(add_install_exe target)
   add_executable(${target} src/${target}.cpp)
   target_link_libraries(${target} ${PROJECT_NAME})
   ament_target_dependencies(${target}
-    "rclcpp" "std_msgs" "geometry_msgs" "xform_utils" "object_manipulation_msgs")
+    "rclcpp" "rcutils" "std_msgs" "geometry_msgs" "xform_utils" "object_manipulation_msgs")
   install(TARGETS ${target} DESTINATION bin)
 endmacro()
 

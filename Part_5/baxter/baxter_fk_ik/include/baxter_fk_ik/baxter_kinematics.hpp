@@ -20,6 +20,8 @@
 #include <vector>
 
 #include <stdio.h>
+
+/* used to avoid neededing to depend on ROS */
 #define ROS_INFO printf
 #define ROS_WARN printf
 

@@ -6,7 +6,8 @@
 #include "rclcpp/rclcpp.hpp"
 
 /* ugly hack until rosconsole works */
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 
 void callback(const std::shared_ptr<rmw_request_id_t> request_header,
               const std::shared_ptr<example_ros_service::srv::PathSrv::Request> request,

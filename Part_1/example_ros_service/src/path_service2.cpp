@@ -9,7 +9,8 @@
 #include "rclcpp/rclcpp.hpp"
 
 /* ugly hack until rosconsole works */
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 
 const double g_move_speed = 1.0;
 const double g_spin_speed = 1.0;

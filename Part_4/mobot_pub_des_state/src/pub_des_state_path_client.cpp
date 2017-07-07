@@ -6,8 +6,9 @@
 #include "nav_msgs/msg/path.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-#define ROS_INFO printf
-#define ROS_WARN printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
+#define ROS_WARN RCUTILS_LOG_WARN
 
 geometry_msgs::msg::Quaternion convertPlanarPhi2Quaternion(double phi)
 {

@@ -2,9 +2,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
-#define ROS_INFO printf
-#define ROS_WARN printf
-
 Vectorq7x1 g_q_vec;
 
 double q123_err(Eigen::VectorXd q1, Eigen::VectorXd q2)

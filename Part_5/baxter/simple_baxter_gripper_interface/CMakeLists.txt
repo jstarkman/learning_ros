@@ -7,6 +7,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
 find_package(baxter_core_msgs REQUIRED)
 
@@ -30,7 +31,7 @@ function(custom_executable target)
   add_executable(${target} src/${target}.cpp)
   target_link_libraries(${target} ${PROJECT_NAME})
   ament_target_dependencies(${target}
-    "rclcpp" "baxter_core_msgs" ${PROJECT_NAME})
+    "rclcpp" "rcutils" "baxter_core_msgs" ${PROJECT_NAME})
   install(TARGETS ${target} DESTINATION bin)  
 endfunction()
 

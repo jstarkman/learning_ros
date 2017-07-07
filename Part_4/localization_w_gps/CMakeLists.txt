@@ -7,6 +7,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
 
 find_package(std_msgs)
@@ -25,7 +26,7 @@ include_directories("${EIGEN3_INCLUDE_DIR}")
 set(target localization_w_gps)
 
 add_executable(${target} src/${target}.cpp)
-ament_target_dependencies(${target} "rclcpp" "std_msgs" "nav_msgs" "geometry_msgs" "xform_utils" "sensor_msgs")
+ament_target_dependencies(${target} "rclcpp" "rcutils" "std_msgs" "nav_msgs" "geometry_msgs" "xform_utils" "sensor_msgs")
 install(TARGETS ${target} DESTINATION bin)
 
 ament_package()

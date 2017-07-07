@@ -18,6 +18,7 @@
   <depend>nav_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>traj_builder</depend>
+  <depend>rcutils</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

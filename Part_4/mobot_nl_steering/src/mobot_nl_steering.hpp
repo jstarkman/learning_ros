@@ -18,7 +18,8 @@
 #include "nav_msgs/msg/odometry.hpp"
 #include "std_msgs/msg/float32.hpp"
 
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 
 const double UPDATE_RATE = 100.0;
 const double K_PSI = 5.0;

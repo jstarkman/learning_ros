@@ -2,8 +2,9 @@
 #include "rclcpp/rclcpp.hpp"
 #include "simple_baxter_gripper_interface/simple_baxter_gripper_interface.hpp"
 
-#define ROS_INFO printf
-#define ROS_WARN printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
+#define ROS_WARN RCUTILS_LOG_WARN
 
 const double MAX_WAIT_TIME = 3.0;
 const double DT = 0.01;

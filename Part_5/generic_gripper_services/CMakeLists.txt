@@ -4,6 +4,7 @@ project(generic_gripper_services)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 find_package(baxter_core_msgs REQUIRED)
@@ -21,7 +22,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 function(custom_executable target)
   add_executable(${target} src/${target}.cpp)
   ament_target_dependencies(${target}
-    "rclcpp" "baxter_core_msgs" "simple_baxter_gripper_interface" "std_srvs")
+    "rclcpp" "rcutils" "baxter_core_msgs" "simple_baxter_gripper_interface" "std_srvs")
   rosidl_target_interfaces(${target}
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
   install(TARGETS ${target}

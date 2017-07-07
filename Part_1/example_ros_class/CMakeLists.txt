@@ -7,6 +7,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -15,7 +16,7 @@ find_package(std_srvs REQUIRED)
 function(add_install_exe target files)
   add_executable(${target} ${files})
   ament_target_dependencies(${target}
-    "rclcpp" "std_msgs" "std_srvs")
+    "rclcpp" "rcutils" "std_msgs" "std_srvs")
   install(TARGETS ${target} DESTINATION bin)
 endfunction()
 

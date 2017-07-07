@@ -4,6 +4,7 @@ project(traj_builder)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -34,7 +35,7 @@ set(target traj_builder_example_main)
 
 add_executable(${target} src/${target}.cpp)
 target_link_libraries(${target} ${PROJECT_NAME})
-ament_target_dependencies(${target} "rclcpp" "std_msgs" "nav_msgs" "geometry_msgs" ${PROJECT_NAME})
+ament_target_dependencies(${target} "rclcpp" "rcutils" "std_msgs" "nav_msgs" "geometry_msgs" ${PROJECT_NAME})
 install(TARGETS ${target} DESTINATION bin)
 
 ament_package()

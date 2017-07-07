@@ -4,6 +4,7 @@ project(arm7dof_fk_ik)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
 if(NOT WIN32)
@@ -37,7 +38,7 @@ ament_export_libraries(${PROJECT_NAME})
 function(custom_executable target)
   add_executable(${target} src/${target}.cpp)
   target_link_libraries(${target} ${PROJECT_NAME})
-  ament_target_dependencies(${target} "rclcpp" "sensor_msgs" ${PROJECT_NAME})
+  ament_target_dependencies(${target} "rclcpp" "rcutils" "sensor_msgs" ${PROJECT_NAME})
   install(TARGETS ${target} DESTINATION bin)
 endfunction()
 

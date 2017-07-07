@@ -4,6 +4,7 @@ project(odom_tf)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -36,7 +37,7 @@ set(target odom_tf_demo)
 
 add_executable(${target} src/odom_tf_main.cpp)
 target_link_libraries(${target} ${PROJECT_NAME})
-ament_target_dependencies(${target} "rclcpp" "std_msgs" "nav_msgs" "geometry_msgs" "tf2" "tf2_ros" "tf2_msgs" "xform_utils" ${PROJECT_NAME})
+ament_target_dependencies(${target} "rclcpp" "rcutils" "std_msgs" "nav_msgs" "geometry_msgs" "tf2" "tf2_ros" "tf2_msgs" "xform_utils" ${PROJECT_NAME})
 install(TARGETS ${target} DESTINATION bin)
 
 ament_package()

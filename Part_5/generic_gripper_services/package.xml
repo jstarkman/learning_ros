@@ -15,6 +15,7 @@
   <depend>simple_baxter_gripper_interface</depend>
   <!--<depend>sticky_fingers</depend> unportable to ROS2-->
   <!--<depend>std_srvs</depend> missing SetBool-->
+  <depend>rcutils</depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

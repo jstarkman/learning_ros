@@ -13,9 +13,8 @@
 #include "std_msgs/msg/float32.hpp"
 #include "std_srvs/srv/trigger.hpp"
 
-// temporary hack until rosconsole works
-// https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
-#define ROS_INFO printf
+#include "rcutils/logging_macros.h"
+#define ROS_INFO RCUTILS_LOG_INFO
 
 class ExampleRosClass
 {

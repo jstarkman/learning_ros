@@ -4,6 +4,7 @@ project(mobot_pub_des_state)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
 
 find_package(std_msgs REQUIRED)
@@ -33,7 +34,7 @@ include_directories("${EIGEN3_INCLUDE_DIR}")
 macro(custom_executable target)
   add_executable(${target} src/${target}.cpp)
   ament_target_dependencies(${target}
-    "rclcpp" "std_msgs" "std_srvs" "nav_msgs" "geometry_msgs" "traj_builder")
+    "rclcpp" "rcutils" "std_msgs" "std_srvs" "nav_msgs" "geometry_msgs" "traj_builder")
   rosidl_target_interfaces(${target}
     ${PROJECT_NAME} "rosidl_typesupport_cpp")
   install(TARGETS ${target}
