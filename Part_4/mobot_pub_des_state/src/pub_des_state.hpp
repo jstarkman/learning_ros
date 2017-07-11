@@ -2,6 +2,7 @@
 #define PUB_DES_STATE_H_
 
 #include <queue>
+#include <vector>
 
 #include "mobot_pub_des_state/srv/path.hpp"
 #include "std_msgs/msg/bool.hpp"

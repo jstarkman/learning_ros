@@ -1,6 +1,8 @@
 #ifndef OBJECT_MANIPULATION_PROPERTIES_H
 #define OBJECT_MANIPULATION_PROPERTIES_H
 
+#include <vector>
+
 #include <Eigen/Dense>
 #include <Eigen/Eigen>
 #include <Eigen/Geometry>
