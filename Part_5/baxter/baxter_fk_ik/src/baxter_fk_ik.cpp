@@ -542,7 +542,7 @@ int Baxter_IK_solver::ik_wristpt_solve_approx_wrt_torso(Eigen::Affine3d const& d
 {
   Eigen::Affine3d desired_flange_pose_wrt_arm_mount =
       Affine_torso_to_rarm_mount_.inverse() * desired_flange_pose_wrt_torso;
-  ik_wrist_solve_approx(desired_flange_pose_wrt_arm_mount, q_solns);
+  return ik_wrist_solve_approx(desired_flange_pose_wrt_arm_mount, q_solns);
 }
 
 int Baxter_IK_solver::ik_solve_approx_wrt_torso_given_qs0(Eigen::Affine3d const& desired_hand_pose_wrt_torso,
