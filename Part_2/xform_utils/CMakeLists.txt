@@ -23,7 +23,7 @@ include_directories("${EIGEN3_INCLUDE_DIR}")
 include_directories(include)
 ament_export_include_directories(include)
 
-add_library(${PROJECT_NAME} STATIC src/xform_utils.cpp)
+add_library(${PROJECT_NAME} SHARED src/xform_utils.cpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp std_msgs nav_msgs geometry_msgs tf2)
 # ament_export_libraries(${PROJECT_NAME})
