@@ -3,6 +3,7 @@
 #ifndef ARM7DOF_TRAJ_STREAMER_H_
 #define ARM7DOF_TRAJ_STREAMER_H_
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/init.h>
 #include <ros/ros.h>  //Must include this for all ROS cpp projects

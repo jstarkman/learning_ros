@@ -4,6 +4,7 @@
 
 #include <gazebo_msgs/ModelState.h>
 #include <gazebo_msgs/SetModelState.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <std_msgs/Float64.h>
 #include <stdio.h>

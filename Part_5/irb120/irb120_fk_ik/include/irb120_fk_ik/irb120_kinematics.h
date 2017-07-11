@@ -7,6 +7,7 @@
 
 #ifndef IRB120_IK_H
 #define IRB120_IK_H
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/ros.h>
 #include <Eigen/Dense>

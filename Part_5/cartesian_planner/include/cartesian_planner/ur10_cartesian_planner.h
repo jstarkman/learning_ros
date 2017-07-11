@@ -8,6 +8,7 @@
 #include <ur_fk_ik/ur_kin.h>
 // include the following if/when want to plan a joint-space path and execute it
 #include <joint_space_planner/joint_space_planner.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

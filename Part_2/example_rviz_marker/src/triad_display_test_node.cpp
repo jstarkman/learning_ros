@@ -1,6 +1,5 @@
-
-
 #include <geometry_msgs/PoseStamped.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/ros.h>
 

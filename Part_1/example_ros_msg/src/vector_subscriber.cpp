@@ -3,6 +3,8 @@
 
 #define ROS_INFO printf
 
+#include <vector>
+
 void myCallback(const custom_msgs::msg::VecOfDoubles::SharedPtr msg)
 {
   std::vector<double> vec_of_doubles = msg->dbl_vec;

@@ -8,6 +8,7 @@
 #ifndef PLANAR_3RBOT_KIN_H
 #define PLANAR_3RBOT_KIN_H
 #include <eigen3/Eigen/src/Geometry/Transform.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/ros.h>
 #include <Eigen/Dense>

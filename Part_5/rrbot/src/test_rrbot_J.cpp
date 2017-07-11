@@ -1,5 +1,6 @@
 
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <rrbot/rrbot_kinematics.h>
 #include <sensor_msgs/JointState.h>

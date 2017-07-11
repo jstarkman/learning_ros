@@ -4,6 +4,7 @@
 #define BAXTER_TRAJ_STREAMER_H_
 
 #include <baxter_core_msgs/JointCommand.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/init.h>
 #include <ros/ros.h>  //Must include this for all ROS cpp projects

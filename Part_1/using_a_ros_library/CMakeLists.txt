@@ -10,10 +10,13 @@ find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
 find_package(creating_a_ros_library REQUIRED)
 
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
+
 function(add_link_install_exe target files)
   add_executable(${target} ${files})
   ament_target_dependencies(${target}
-    "rclcpp" "creating_a_ros_library")
+    "rclcpp" "creating_a_ros_library" "std_msgs" "std_srvs")
   install(TARGETS ${target} DESTINATION bin)
 endfunction()
 

@@ -5,7 +5,10 @@ project(baxter_fk_ik)
 find_package(ament_cmake REQUIRED)
 
 # https://stackoverflow.com/a/12258855
-set(EIGEN3_INCLUDE_DIR "/usr/include/eigen3/")
+set(EIGEN3_INCLUDE_DIR "$ENV{EIGEN3_INCLUDE_DIR}")
+if(NOT EIGEN3_INCLUDE_DIR)
+    message(FATAL_ERROR "Please point the environment variable EIGEN3_INCLUDE_DIR to the include directory of your Eigen3 installation.")
+endif()
 include_directories("${EIGEN3_INCLUDE_DIR}")
 
 include_directories(include)

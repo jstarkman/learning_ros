@@ -9,6 +9,7 @@
 #include "nav_msgs/msg/odometry.hpp"
 
 // some generically useful stuff to include...
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdlib.h>
 #include <queue>

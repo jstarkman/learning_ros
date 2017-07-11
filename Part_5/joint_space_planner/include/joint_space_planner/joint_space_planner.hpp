@@ -5,6 +5,7 @@
 #define JOINT_SPACE_PLANNER_H
 #include <Eigen/Core>
 #include <iostream>
+#include <vector>
 
 class JointSpacePlanner
 {

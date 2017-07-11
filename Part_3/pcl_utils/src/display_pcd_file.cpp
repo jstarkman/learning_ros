@@ -1,5 +1,6 @@
 
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <pcl-1.7/pcl/PCLHeader.h>
 #include <pcl-1.7/pcl/point_cloud.h>

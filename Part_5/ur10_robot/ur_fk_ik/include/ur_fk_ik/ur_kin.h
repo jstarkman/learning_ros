@@ -28,6 +28,7 @@
 //  1,  0,  0,  0
 //  0,  0,  0,  1
 // but tool0 frame is same as last DH frame;
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/ros.h>
 #include <Eigen/Dense>

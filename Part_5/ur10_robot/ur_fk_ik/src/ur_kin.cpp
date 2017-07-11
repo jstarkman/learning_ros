@@ -1,5 +1,6 @@
 #include <ur_kinematics/ur_kin.h>
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
 
