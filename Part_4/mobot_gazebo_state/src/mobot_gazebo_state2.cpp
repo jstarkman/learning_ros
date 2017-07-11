@@ -1,5 +1,6 @@
 #include <gazebo_msgs/ModelStates.h>
 #include <geometry_msgs/Pose.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>

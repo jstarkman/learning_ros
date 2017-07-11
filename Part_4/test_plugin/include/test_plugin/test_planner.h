@@ -4,6 +4,7 @@
 #include <base_local_planner/costmap_model.h>
 #include <costmap_2d/cost_values.h>
 #include <geometry_msgs/Quaternion.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <nav_core/base_local_planner.h>
 #include <nav_msgs/Odometry.h>

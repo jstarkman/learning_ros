@@ -1,6 +1,7 @@
 #ifndef ODOM_TF_H_
 #define ODOM_TF_H_
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdlib.h>
 #include <string>

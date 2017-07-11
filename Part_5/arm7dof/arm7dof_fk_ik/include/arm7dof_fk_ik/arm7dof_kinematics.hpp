@@ -11,6 +11,7 @@
 #ifndef ARM7DOF_KIN_H
 #define ARM7DOF_KIN_H
 // #include <eigen3/Eigen/src/Geometry/Transform.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
 #include <Eigen/Dense>

@@ -2,6 +2,7 @@
 
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/ros.h>
 #include <sensor_msgs/image_encodings.h>

@@ -3,6 +3,7 @@
 #include <gazebo_msgs/ModelState.h>
 #include <gazebo_msgs/SetModelState.h>
 #include <geometry_msgs/Pose.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/ros.h>
 #include <iostream>

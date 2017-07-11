@@ -1,6 +1,7 @@
 #include <gazebo_msgs/ApplyJointEffort.h>
 #include <gazebo_msgs/GetJointProperties.h>
 #include <gazebo_msgs/GetModelState.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>

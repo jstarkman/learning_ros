@@ -5,6 +5,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
 #include <string.h>

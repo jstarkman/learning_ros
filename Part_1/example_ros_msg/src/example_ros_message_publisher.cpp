@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include "example_ros_msg/msg/example_message.hpp"
 #include "rclcpp/rclcpp.hpp"
