@@ -15,7 +15,7 @@ endif()
 include_directories(include)
 ament_export_include_directories(include)
 
-add_library(${PROJECT_NAME} SHARED src/traj_builder.cpp)
+add_library(${PROJECT_NAME} STATIC src/traj_builder.cpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp std_msgs nav_msgs geometry_msgs
   )

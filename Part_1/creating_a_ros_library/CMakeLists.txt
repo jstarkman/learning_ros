@@ -14,7 +14,7 @@ find_package(std_srvs REQUIRED)
 include_directories(include)
 ament_export_include_directories(include)
 
-add_library(${PROJECT_NAME} SHARED src/example_ros_class.cpp)
+add_library(${PROJECT_NAME} STATIC src/example_ros_class.cpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp std_msgs std_srvs class_loader)
 target_compile_definitions(${PROJECT_NAME}

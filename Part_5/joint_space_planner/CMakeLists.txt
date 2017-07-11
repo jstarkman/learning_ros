@@ -18,7 +18,7 @@ include_directories("${EIGEN3_INCLUDE_DIR}")
 include_directories(include)
 ament_export_include_directories(include)
 
-add_library(${PROJECT_NAME} SHARED src/${PROJECT_NAME}.cpp)
+add_library(${PROJECT_NAME} STATIC src/${PROJECT_NAME}.cpp)
 target_compile_definitions(${PROJECT_NAME}
   PRIVATE ${PROJECT_NAME}"_BUILDING_LIBRARY")
 install(

@@ -22,7 +22,7 @@ include_directories("${EIGEN3_INCLUDE_DIR}")
 include_directories(include)
 ament_export_include_directories(include)
 
-add_library(${PROJECT_NAME} SHARED src/${PROJECT_NAME}.cpp)
+add_library(${PROJECT_NAME} STATIC src/${PROJECT_NAME}.cpp)
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp std_msgs geometry_msgs xform_utils object_manipulation_msgs)
 target_compile_definitions(${PROJECT_NAME}
