@@ -1,5 +1,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
+/* Generated message definitions (see file itself for details).
+ * Format: package_name/FooMessage -> package_name/msg/foo_message.hpp 
+ */
 #include "example_ros_msg/msg/example_message.hpp"
 #include "rclcpp/rclcpp.hpp"
 
@@ -25,6 +28,7 @@ int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
   auto node = rclcpp::node::Node::make_shared("example_ros_message_publisher");
+  /* Note the type of the message: package_name::msg::FooMessage */
   auto pub = node->create_publisher<example_ros_msg::msg::ExampleMessage>("example_topic", rmw_qos_profile_default);
 
   double counter = 0.0;
