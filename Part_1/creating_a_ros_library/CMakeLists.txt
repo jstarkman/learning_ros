@@ -18,35 +18,43 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 
+# Include own include/ directory and export under ros2_ws/install/
 include_directories(include)
 ament_export_include_directories(include)
 
+# Add new shared library (libfoo.so) named libcreating_a_ros_library.so
 add_library(${PROJECT_NAME} SHARED src/example_ros_class.cpp)
+# Library depends on these other packages
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp std_msgs std_srvs class_loader)
+# Makes DLL visible on Windows
 target_compile_definitions(${PROJECT_NAME}
   PRIVATE "CREATING_A_ROS_LIBRARY_BUILDING_LIBRARY")
+# Copy under install/lib/
 install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
+# Tell ament to effect the copy
 ament_export_libraries(${PROJECT_NAME})
 
-function(add_link_install_exe target link_to_whom files)
+function(add_link_install_exe target files)
   add_executable(${target} ${files})
-  target_link_libraries(${target} ${link_to_whom})
+  # Link against own library
+  target_link_libraries(${target} ${PROJECT_NAME})
+  # Depend on self
   ament_target_dependencies(${target}
-    "rclcpp" "rcutils" "std_msgs" "std_srvs" ${link_to_whom})
+    "rclcpp" "rcutils" "std_msgs" "std_srvs" ${PROJECT_NAME})
   install(TARGETS ${target} DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
-add_link_install_exe(ros_library_test_main ${PROJECT_NAME}
-  src/example_ros_class_test_main.cpp)
+add_link_install_exe(ros_library_test_main src/example_ros_class_test_main.cpp)
 
 ament_package()
 
+# Ensure that header files are copied/symlinked where they should be
 install(DIRECTORY include/
   DESTINATION include
 )
